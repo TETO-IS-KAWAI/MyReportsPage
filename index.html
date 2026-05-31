@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>보고서 라이브러리</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-2: #f7f7f5;
+    --bg-3: #f0efec;
+    --text: #1a1a1a;
+    --text-2: #6b6b6b;
+    --text-3: #a0a0a0;
+    --border: rgba(0,0,0,0.08);
+    --border-2: rgba(0,0,0,0.14);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --font: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    --font-serif: 'Noto Serif KR', Georgia, serif;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg-3);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ── topbar ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    height: 54px;
+    display: flex; align-items: center;
+    padding: 0 1.5rem; gap: 1.25rem;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 600; letter-spacing: -0.3px;
+    flex-shrink: 0; text-decoration: none; color: var(--text);
+  }
+  .logo-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--text); display: flex; align-items: center; justify-content: center;
+  }
+  .logo-icon svg { width: 16px; height: 16px; fill: none; stroke: white; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .search-wrap { flex: 1; max-width: 340px; position: relative; }
+  .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; stroke: var(--text-3); fill: none; stroke-width: 2; stroke-linecap: round; }
+  .search-wrap input {
+    width: 100%; padding: 7px 12px 7px 32px;
+    border: 1px solid var(--border-2); border-radius: var(--radius-sm);
+    background: var(--bg-2); font-size: 13px; color: var(--text);
+    outline: none; font-family: var(--font); transition: border-color 0.15s, background 0.15s;
+  }
+  .search-wrap input:focus { border-color: rgba(0,0,0,0.3); background: var(--bg); }
+  .search-wrap input::placeholder { color: var(--text-3); }
+
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .view-toggle { display: flex; border: 1px solid var(--border-2); border-radius: var(--radius-sm); overflow: hidden; }
+  .view-btn {
+    padding: 5px 8px; background: transparent; border: none; cursor: pointer;
+    color: var(--text-3); display: flex; align-items: center; transition: all 0.1s;
+  }
+  .view-btn:hover { color: var(--text-2); background: var(--bg-2); }
+  .view-btn.active { background: var(--text); color: white; }
+  .view-btn svg { width: 15px; height: 15px; fill: currentColor; }
+
+  .sort-select {
+    padding: 6px 10px; border: 1px solid var(--border-2); border-radius: var(--radius-sm);
+    background: var(--bg); font-size: 13px; color: var(--text); cursor: pointer;
+    font-family: var(--font); outline: none;
+  }
+
+  /* ── layout ── */
+  .layout { display: flex; min-height: calc(100vh - 54px); }
+
+  /* ── sidebar ── */
+  .sidebar {
+    width: 196px; flex-shrink: 0;
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+    padding: 1.25rem 0;
+    position: sticky; top: 54px; height: calc(100vh - 54px); overflow-y: auto;
+  }
+  .sidebar-section { margin-bottom: 1.75rem; }
+  .sidebar-label {
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.6px;
+    text-transform: uppercase; color: var(--text-3);
+    padding: 0 1.25rem; margin-bottom: 4px;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 1.25rem; font-size: 13px; cursor: pointer;
+    color: var(--text-2); border-left: 2px solid transparent;
+    transition: all 0.12s; user-select: none;
+  }
+  .sidebar-item:hover { color: var(--text); background: var(--bg-2); }
+  .sidebar-item.active { color: var(--text); background: var(--bg-2); border-left-color: var(--text); font-weight: 500; }
+  .sidebar-item svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .sidebar-count {
+    margin-left: auto; font-size: 11px; background: var(--bg-3);
+    color: var(--text-3); padding: 1px 7px; border-radius: 20px;
+  }
+
+  .tags-wrap { padding: 0 1.25rem; display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag-chip {
+    font-size: 11.5px; padding: 3px 9px; border-radius: 20px;
+    border: 1px solid var(--border-2); color: var(--text-2); background: transparent;
+    cursor: pointer; transition: all 0.12s; user-select: none;
+  }
+  .tag-chip:hover { border-color: rgba(0,0,0,0.25); color: var(--text); }
+  .tag-chip.active { background: var(--text); color: white; border-color: transparent; }
+
+  /* ── main ── */
+  .main { flex: 1; padding: 1.5rem 1.75rem; min-width: 0; }
+
+  .toolbar {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 1.125rem;
+  }
+  .count-text { font-size: 13px; color: var(--text-2); }
+
+  /* ── grid ── */
+  .grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+
+  .report-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1rem 1.125rem;
+    cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
+    text-decoration: none; color: inherit; display: block;
+  }
+  .report-card:hover { border-color: var(--border-2); box-shadow: var(--shadow); }
+
+  .card-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+  .card-icon {
+    width: 34px; height: 34px; border-radius: var(--radius-sm);
+    background: var(--bg-2); display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0;
+  }
+  .card-icon svg { width: 16px; height: 16px; stroke: var(--text-2); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .card-star { margin-left: auto; color: #d4a017; font-size: 14px; }
+
+  .card-title { font-size: 13.5px; font-weight: 500; line-height: 1.45; margin-bottom: 6px; }
+  .card-desc { font-size: 12px; color: var(--text-2); line-height: 1.5; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .card-footer { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .cat-badge {
+    font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500;
+  }
+  .card-date { font-size: 11px; color: var(--text-3); margin-left: auto; }
+
+  .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .card-tag {
+    font-size: 11px; padding: 2px 7px; border-radius: 20px;
+    border: 1px solid var(--border); color: var(--text-3);
+  }
+
+  /* ── list view ── */
+  .list-view { display: flex; flex-direction: column; gap: 6px; }
+  .report-row {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 0.875rem 1.125rem;
+    display: flex; align-items: center; gap: 12px; cursor: pointer;
+    transition: border-color 0.15s; text-decoration: none; color: inherit;
+  }
+  .report-row:hover { border-color: var(--border-2); }
+  .row-icon {
+    width: 30px; height: 30px; border-radius: var(--radius-sm);
+    background: var(--bg-2); display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0;
+  }
+  .row-icon svg { width: 14px; height: 14px; stroke: var(--text-2); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .row-title { font-size: 13.5px; font-weight: 500; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .row-tags { display: flex; gap: 4px; }
+
+  /* ── category colors ── */
+  .cat-obs    { background: #EBF3FD; color: #1a5fa6; }
+  .cat-anal   { background: #EDFAF0; color: #1a7a3a; }
+  .cat-exp    { background: #FEF4E8; color: #a05a0a; }
+  .cat-tech   { background: #F0EDFE; color: #5040b0; }
+  .cat-other  { background: var(--bg-3); color: var(--text-2); }
+
+  /* ── modal overlay ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    z-index: 1000; display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(2px);
+  }
+  .modal-overlay.open { display: flex; }
+
+  /* ── viewer ── */
+  .viewer-box {
+    background: var(--bg); border-radius: var(--radius-lg);
+    border: 1px solid var(--border); width: 900px; max-width: 95vw;
+    height: 88vh; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .viewer-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+  .viewer-title { font-size: 14px; font-weight: 500; flex: 1; }
+  .viewer-meta { font-size: 12px; color: var(--text-3); }
+  .viewer-close {
+    width: 28px; height: 28px; border: none; background: none; cursor: pointer;
+    border-radius: var(--radius-sm); color: var(--text-2); display: flex;
+    align-items: center; justify-content: center; transition: background 0.1s;
+  }
+  .viewer-close:hover { background: var(--bg-2); }
+  .viewer-close svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+  .viewer-frame { flex: 1; width: 100%; border: none; }
+
+  /* ── empty state ── */
+  .empty { text-align: center; padding: 5rem 0; color: var(--text-3); }
+  .empty svg { width: 40px; height: 40px; stroke: currentColor; fill: none; stroke-width: 1.5; margin: 0 auto 12px; display: block; }
+  .empty p { font-size: 14px; }
+
+  /* ── README banner ── */
+  .readme {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem; font-size: 13px; color: var(--text-2); line-height: 1.7;
+  }
+  .readme strong { color: var(--text); font-weight: 600; }
+  .readme code {
+    font-family: 'Menlo', 'Consolas', monospace; font-size: 12px;
+    background: var(--bg-3); padding: 1px 5px; border-radius: 4px; color: var(--text);
+  }
+  .readme details summary { cursor: pointer; color: var(--text); font-weight: 500; list-style: none; display: flex; align-items: center; gap: 6px; }
+  .readme details summary::before { content: '▶'; font-size: 9px; transition: transform 0.15s; }
+  .readme details[open] summary::before { transform: rotate(90deg); }
+  .readme details .content { margin-top: 0.75rem; }
+</style>
+</head>
+<body>
+
+<!-- topbar -->
+<header class="topbar">
+  <a class="logo" href="#">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    보고서 라이브러리
+  </a>
+
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="searchInput" placeholder="제목, 카테고리, 태그 검색…" autocomplete="off">
+  </div>
+
+  <div class="topbar-right">
+    <select class="sort-select" id="sortSelect">
+      <option value="newest">최신순</option>
+      <option value="oldest">오래된순</option>
+      <option value="title">이름순</option>
+    </select>
+    <div class="view-toggle">
+      <button class="view-btn active" id="btnGrid" title="그리드">
+        <svg viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      </button>
+      <button class="view-btn" id="btnList" title="목록">
+        <svg viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="3" rx="1"/><rect x="1" y="7" width="14" height="3" rx="1"/><rect x="1" y="12" width="14" height="3" rx="1"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- layout -->
+<div class="layout">
+
+  <!-- sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">보기</div>
+      <div class="sidebar-item active" data-filter="all">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        전체
+        <span class="sidebar-count" id="countAll">0</span>
+      </div>
+      <div class="sidebar-item" data-filter="starred">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        즐겨찾기
+        <span class="sidebar-count" id="countStarred">0</span>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">카테고리</div>
+      <div id="catList"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">태그</div>
+      <div class="tags-wrap" id="tagList"></div>
+    </div>
+  </nav>
+
+  <!-- main -->
+  <main class="main">
+    <!-- readme/how-to banner -->
+    <div class="readme">
+      <details>
+        <summary>보고서 추가 방법</summary>
+        <div class="content">
+          1. <code>reports/</code> 폴더에 HTML 파일을 넣는다.<br>
+          2. <code>reports.json</code>에 항목을 추가한다:<br>
+          <pre style="background:var(--bg-3);padding:0.75rem;border-radius:6px;margin-top:0.5rem;font-size:12px;overflow-x:auto;font-family:Menlo,Consolas,monospace;line-height:1.6">{
+  "id": "report-05",
+  "title": "보고서 제목",
+  "file": "reports/report-05.html",
+  "category": "관측 보고서",
+  "tags": ["태그1", "태그2"],
+  "date": "2025-06-01",
+  "description": "간략한 설명",
+  "starred": false
+}</pre>
+          3. GitHub에 커밋하면 자동으로 반영된다.
+        </div>
+      </details>
+    </div>
+
+    <div class="toolbar">
+      <span class="count-text" id="countLabel">불러오는 중…</span>
+    </div>
+    <div id="container"></div>
+  </main>
+</div>
+
+<!-- viewer modal -->
+<div class="modal-overlay" id="viewerOverlay">
+  <div class="viewer-box">
+    <div class="viewer-header">
+      <svg style="width:16px;height:16px;stroke:var(--text-3);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span class="viewer-title" id="viewerTitle"></span>
+      <span class="viewer-meta" id="viewerMeta"></span>
+      <button class="viewer-close" id="viewerClose" title="닫기">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <iframe class="viewer-frame" id="viewerFrame" sandbox="allow-same-origin allow-scripts"></iframe>
+  </div>
+</div>
+
+<script>
+// ── SVG icons ──────────────────────────────────────────────
+const ICONS = {
+  file:    `<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+  chart:   `<svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
+  scope:   `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+  flask:   `<svg viewBox="0 0 24 24"><path d="M9 3h6M9 3v7l-4 9a1 1 0 0 0 .93 1.36h12.14A1 1 0 0 0 19 19l-4-9V3"/></svg>`,
+  code:    `<svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`,
+};
+
+const CAT_CONFIG = {
+  '관측 보고서': { cls: 'cat-obs',  icon: ICONS.scope  },
+  '분석 보고서': { cls: 'cat-anal', icon: ICONS.chart  },
+  '실험 보고서': { cls: 'cat-exp',  icon: ICONS.flask  },
+  '기술 문서':   { cls: 'cat-tech', icon: ICONS.code   },
+};
+function catCfg(c) { return CAT_CONFIG[c] || { cls: 'cat-other', icon: ICONS.file }; }
+
+// ── state ─────────────────────────────────────────────────
+let reports = [];
+let activeCat = 'all';
+let activeTag = null;
+let viewMode  = 'grid';
+
+// ── fetch reports.json ────────────────────────────────────
+async function init() {
+  try {
+    const res = await fetch('reports.json');
+    if (!res.ok) throw new Error('fetch failed');
+    reports = await res.json();
+  } catch(e) {
+    document.getElementById('container').innerHTML =
+      `<div class="empty"><p style="color:red">reports.json을 불러오지 못했습니다.<br>로컬에서는 Live Server를 사용하세요.</p></div>`;
+    return;
+  }
+  buildSidebar();
+  render();
+}
+
+// ── sidebar ───────────────────────────────────────────────
+function buildSidebar() {
+  // category counts
+  const catMap = {};
+  reports.forEach(r => { catMap[r.category] = (catMap[r.category]||0)+1; });
+
+  document.getElementById('countAll').textContent = reports.length;
+  document.getElementById('countStarred').textContent = reports.filter(r=>r.starred).length;
+
+  const catEl = document.getElementById('catList');
+  catEl.innerHTML = Object.entries(catMap).map(([cat, count]) => {
+    const cfg = catCfg(cat);
+    return `<div class="sidebar-item" data-filter="cat:${cat}">
+      ${cfg.icon}<span style="flex:1">${cat}</span>
+      <span class="sidebar-count">${count}</span>
+    </div>`;
+  }).join('');
+
+  // tags
+  const tagSet = [...new Set(reports.flatMap(r=>r.tags))].sort();
+  document.getElementById('tagList').innerHTML = tagSet
+    .map(t => `<span class="tag-chip" data-tag="${t}">${t}</span>`)
+    .join('');
+
+  // sidebar click
+  document.querySelectorAll('.sidebar-item').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.sidebar-item').forEach(e=>e.classList.remove('active'));
+      el.classList.add('active');
+      const f = el.dataset.filter;
+      activeCat = f.startsWith('cat:') ? f.slice(4) : f;
+      activeTag = null;
+      document.querySelectorAll('.tag-chip').forEach(e=>e.classList.remove('active'));
+      render();
+    });
+  });
+
+  // tag click
+  document.querySelectorAll('.tag-chip').forEach(el => {
+    el.addEventListener('click', () => {
+      const t = el.dataset.tag;
+      activeTag = (activeTag === t) ? null : t;
+      el.classList.toggle('active', activeTag === t);
+      if (activeTag) {
+        // deselect sidebar
+        document.querySelectorAll('.sidebar-item').forEach(e=>e.classList.remove('active'));
+        activeCat = 'all';
+      }
+      render();
+    });
+  });
+}
+
+// ── filter + sort ─────────────────────────────────────────
+function getFiltered() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const sort = document.getElementById('sortSelect').value;
+
+  let list = reports.filter(r => {
+    if (activeCat === 'starred' && !r.starred) return false;
+    if (activeCat !== 'all' && activeCat !== 'starred' && r.category !== activeCat) return false;
+    if (activeTag && !r.tags.includes(activeTag)) return false;
+    if (q) {
+      const hay = (r.title + r.category + r.tags.join('') + (r.description||'')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  if (sort === 'newest') list.sort((a,b) => b.date.localeCompare(a.date));
+  else if (sort === 'oldest') list.sort((a,b) => a.date.localeCompare(b.date));
+  else list.sort((a,b) => a.title.localeCompare(b.title, 'ko'));
+
+  return list;
+}
+
+// ── render ────────────────────────────────────────────────
+function render() {
+  const list = getFiltered();
+  document.getElementById('countLabel').textContent = `${list.length}개의 보고서`;
+  const cont = document.getElementById('container');
+
+  if (!list.length) {
+    cont.innerHTML = `<div class="empty">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
+      <p>조건에 맞는 보고서가 없습니다</p>
+    </div>`;
+    return;
+  }
+
+  if (viewMode === 'grid') {
+    cont.className = 'grid-view';
+    cont.innerHTML = list.map(r => cardHTML(r)).join('');
+  } else {
+    cont.className = 'list-view';
+    cont.innerHTML = list.map(r => rowHTML(r)).join('');
+  }
+
+  cont.querySelectorAll('[data-id]').forEach(el => {
+    el.addEventListener('click', () => openViewer(el.dataset.id));
+  });
+}
+
+function starHTML(r) {
+  return r.starred ? `<span class="card-star" title="즐겨찾기">★</span>` : '';
+}
+
+function cardHTML(r) {
+  const cfg = catCfg(r.category);
+  const tagsHtml = r.tags.slice(0,4).map(t=>`<span class="card-tag">${t}</span>`).join('');
+  return `<div class="report-card" data-id="${r.id}">
+    <div class="card-top">
+      <div class="card-icon">${cfg.icon}</div>
+      ${starHTML(r)}
+    </div>
+    <div class="card-title">${r.title}</div>
+    ${r.description ? `<div class="card-desc">${r.description}</div>` : ''}
+    <div class="card-footer">
+      <span class="cat-badge ${cfg.cls}">${r.category}</span>
+      <span class="card-date">${r.date}</span>
+    </div>
+    ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ''}
+  </div>`;
+}
+
+function rowHTML(r) {
+  const cfg = catCfg(r.category);
+  const tagsHtml = r.tags.slice(0,3).map(t=>`<span class="card-tag">${t}</span>`).join('');
+  return `<div class="report-row" data-id="${r.id}">
+    <div class="row-icon">${cfg.icon}</div>
+    <span class="row-title">${r.title}</span>
+    <div class="row-right">
+      ${tagsHtml ? `<div class="row-tags">${tagsHtml}</div>` : ''}
+      <span class="cat-badge ${cfg.cls}">${r.category}</span>
+      <span style="font-size:12px;color:var(--text-3)">${r.date}</span>
+      ${r.starred ? '<span style="color:#d4a017;font-size:13px">★</span>' : ''}
+    </div>
+  </div>`;
+}
+
+// ── viewer ────────────────────────────────────────────────
+function openViewer(id) {
+  const r = reports.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('viewerTitle').textContent = r.title;
+  document.getElementById('viewerMeta').textContent = r.date + ' · ' + r.category;
+  document.getElementById('viewerFrame').src = r.file;
+  document.getElementById('viewerOverlay').classList.add('open');
+}
+
+document.getElementById('viewerClose').addEventListener('click', closeViewer);
+document.getElementById('viewerOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('viewerOverlay')) closeViewer();
+});
+function closeViewer() {
+  document.getElementById('viewerOverlay').classList.remove('open');
+  document.getElementById('viewerFrame').src = '';
+}
+
+// ── view toggle ───────────────────────────────────────────
+document.getElementById('btnGrid').addEventListener('click', () => {
+  viewMode = 'grid';
+  document.getElementById('btnGrid').classList.add('active');
+  document.getElementById('btnList').classList.remove('active');
+  render();
+});
+document.getElementById('btnList').addEventListener('click', () => {
+  viewMode = 'list';
+  document.getElementById('btnList').classList.add('active');
+  document.getElementById('btnGrid').classList.remove('active');
+  render();
+});
+
+// ── search + sort ─────────────────────────────────────────
+document.getElementById('searchInput').addEventListener('input', render);
+document.getElementById('sortSelect').addEventListener('change', render);
+
+// ── keyboard ──────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeViewer();
+});
+
+init();
+</script>
+</body>
+</html>

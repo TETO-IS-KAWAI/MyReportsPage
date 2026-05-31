@@ -1,0 +1,12 @@
+[
+  {
+    "id": "report-math-seminar-may",
+    "title": "조합론적 영점 정리",
+    "file": "reports/report-math-seminar-may.html",
+    "category": "탐구 보고서",
+    "tags": ["수학", "세미나", "조합론"],
+    "date": "2025-05-31",
+    "description": "Noga Alon의 Combinatorial Nullstellensatz 논문을 읽고 탐구한 글",
+    "starred": true
+  }
+]

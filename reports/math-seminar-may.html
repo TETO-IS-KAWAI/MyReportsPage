@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>조합론적 영점 정리 (Combinatorial Nullstellensatz)</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@400;500&family=JetBrains+Mono&display=swap');
+
+  :root {
+    --primary: #700428;
+    --accent: #a42e32;
+    --light-red: #ffb4c2;
+    --mid-red: #eec5d5;
+    --text: #1c1c1c;
+    --muted: #555;
+    --border: #ec0047;
+    --bg: #fdfafb;
+    --theorem-bg: #fbeef0;
+    --proof-bg: #f9f9f9;
+    --definition-bg: #f0f7ee;
+    --definition-border: #1d6a2e;
+    --remark-bg: #fff8e8;
+    --remark-border: #a88600;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Serif KR', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--text);
+    background: var(--bg);
+    padding: 0;
+  }
+
+  .cover {
+    background: var(--primary);
+    color: white;
+    padding: 80px 60px 60px;
+    min-height: 240px;
+    position: relative;
+  }
+
+  .cover-subtitle {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--mid-red);
+    margin-bottom: 18px;
+  }
+
+  .cover h1 {
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+
+  .cover-en {
+    font-size: 18px;
+    color: var(--mid-red);
+    font-style: italic;
+    margin-bottom: 30px;
+  }
+
+  .cover-meta {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    color: #c1c1c1;
+    border-top: 1px solid #c1c1c1;
+    padding-top: 18px;
+    margin-top: 10px;
+  }
+
+  .toc {
+    background: white;
+    border-left: 4px solid var(--accent);
+    margin: 40px 60px;
+    padding: 28px 32px;
+    border-radius: 0 6px 6px 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+
+  .toc h2 {
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .toc ol {
+    padding-left: 20px;
+  }
+
+  .toc li {
+    font-size: 14px;
+    line-height: 2;
+    color: var(--primary);
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+
+  .toc li a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .toc li a:hover { text-decoration: underline; }
+
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 20px 60px 80px;
+  }
+
+  h2.section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 56px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    counter-increment: section;
+  }
+
+  h2.section-title::before {
+    content: counter(section) ". ";
+    color: var(--accent);
+  }
+
+  h3.subsection {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--primary);
+    margin: 32px 0 14px;
+  }
+
+  h4.subsection {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary);
+    margin: 28px 0 12px;
+  }
+
+  body { counter-reset: section; }
+
+  p { margin-bottom: 14px; }
+
+  .box {
+    border-radius: 6px;
+    padding: 22px 26px;
+    margin: 24px 0;
+    position: relative;
+  }
+
+  .box-label {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .box-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--primary);
+  }
+
+  .theorem {
+    background: var(--theorem-bg);
+    border-left: 4px solid var(--accent);
+  }
+
+  .theorem .box-label { color: var(--accent); }
+
+  .definition {
+    background: var(--definition-bg);
+    border-left: 4px solid var(--definition-border);
+  }
+
+  .definition .box-label { color: var(--definition-border); }
+
+  .lemma {
+    background: #f3edfb;
+    border-left: 4px solid #7c4dbb;
+  }
+
+  .lemma .box-label { color: #7c4dbb; }
+
+  .remark {
+    background: var(--remark-bg);
+    border-left: 4px solid var(--remark-border);
+  }
+
+  .remark .box-label { color: var(--remark-border); }
+
+  .proof {
+    background: var(--proof-bg);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 20px 26px;
+    margin: 16px 0 28px;
+  }
+
+  .proof-header {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .qed {
+    text-align: right;
+    font-size: 20px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  .example-box {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 26px;
+    margin: 20px 0;
+  }
+
+  .example-box .box-label {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 8px;
+  }
+
+  .step {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 12px 0;
+  }
+
+  .step-num {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+
+  thead { background: var(--primary); color: white; }
+
+  th {
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  tr:nth-child(even) td { background: #f4f7fb; }
+
+  .highlight {
+    background: var(--light-red);
+    border-radius: 4px;
+    padding: 12px 18px;
+    margin: 16px 0;
+    color: var(--primary);
+    border-left: 3px solid var(--accent);
+  }
+
+  .problem-box {
+    background: white;
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin: 28px 0;
+  }
+
+  .problem-box .problem-num {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .solution {
+    background: #f9fbff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 26px;
+    margin-top: 16px;
+  }
+
+  .solution-header {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  .footnote {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'Noto Sans KR', sans-serif;
+    margin-top: 6px;
+  }
+
+  .references {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    line-height: 2;
+  }
+
+  .references li { margin-bottom: 8px; }
+
+  blockquote {
+    border-left: 3px solid var(--border);
+    padding-left: 18px;
+    color: var(--muted);
+    font-style: italic;
+    margin: 16px 0;
+  }
+
+  .motivation {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 30px 34px;
+    margin: 24px 0;
+    line-height: 2;
+  }
+
+  .motivation p { margin-bottom: 16px; }
+  .motivation p:last-child { margin-bottom: 0; }
+
+  .feeling {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 32px;
+    margin: 24px 0;
+    line-height: 2;
+  }
+
+  .feeling p { margin-bottom: 14px; }
+  .feeling p:last-child { margin-bottom: 0; }
+
+  h2.section-title.no-counter {
+    counter-increment: none;
+  }
+
+  h2.section-title.no-counter::before {
+    content: none;
+  }
+
+  /* 조사한 내용의 a~f 하위 섹션 */
+  h3.content-section {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3.content-section .section-letter {
+    color: var(--accent);
+    margin-right: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-subtitle">5월의 수학 보고서</div>
+  <h1>조합론적 영점 정리</h1>
+  <div class="cover-en">Combinatorial Nullstellensatz</div>
+  <div class="cover-meta">
+    3611 이준규 &nbsp;|&nbsp; WITH HTML5
+  </div>
+</div>
+
+<div class="toc">
+  <h2>목차</h2>
+  <ol>
+    <li><a href="#motivation">조사하게 된 동기</a></li>
+    <li><a href="#content">조사한 내용</a>
+      <ol type="a" style="padding-left:18px; margin-top:4px;">
+        <li><a href="#intro">이론적 배경</a></li>
+        <li><a href="#foundations">기초 개념</a></li>
+        <li><a href="#proof">정리의 엄밀한 증명</a></li>
+        <li><a href="#related">관련 정리들</a></li>
+        <li><a href="#cauchy">응용 증명: Cauchy-Davenport 정리</a></li>
+        <li><a href="#problems">연습 문제 풀이</a></li>
+      </ol>
+    </li>
+    <li><a href="#feeling">조사 감상</a></li>
+    <li><a href="#references">참고 문헌 및 출처</a></li>
+  </ol>
+</div>
+
+<div class="content">
+
+<!-- ===== 동기 ===== -->
+<h2 class="section-title" id="motivation">조사하게 된 동기</h2>
+
+<div class="motivation">
+  <p>
+  친구와 조합 이야기를 나누다가 이 정리의 존재를 알게 되었다. 당시에는 조합론 문제를 다항식으로 풀 수 있다는 것 자체가 생소하게 느껴졌는데, 그 아이디어가 꽤 인상적이었다. 찾아보니 Noga Alon이라는 수학자가 1999년에 발표한 정리였고, 수론과 그래프 이론에서 다양하게 쓰인다는 것을 알게 되었다.
+  </p>
+  <p>
+  일단 흥미가 생겨서 정리 자체를 파고들었다. 정리가 무슨 말인지 이해하고, 왜 성립하는지 따라가다 보니 어떤 문제에 활용할 수 있는지도 자연스럽게 궁금해졌다. 그 과정을 그대로 작성하려고 했다.
+  </p>
+  <p>
+  지난 4월에 자율 탐구 보고서를 안 하기도 했고 최근 HTML 편집하고 작성하는 것에 재미가 들려 시간을 조금 썼다.
+  </p>
+</div>
+
+<!-- ===== 조사한 내용 ===== -->
+<h2 class="section-title" id="content">조사한 내용</h2>
+
+<!-- a. 이론적 배경 -->
+<h3 class="content-section" id="intro"><span class="section-letter">a.</span> 이론적 배경</h3>
+
+<p>
+다항식이 너무 많은 점에서 0이 될 수는 없다는 생각은 수학에서 매우 오래된 직관이다. 1차원에서는 "$n$차 다항식은 근이 최대 $n$개"라는 사실이 이를 정확히 표현한다. 그렇다면 변수가 여러 개일 때는 어떨까?
+</p>
+
+<p>
+이스라엘의 수학자 Noga Alon은 1999년 <em>Combinatorics, Probability and Computing</em>에 발표한 논문에서, 이 직관을 다변수 다항식으로 일반화하였다. 그 결과물이 바로 <strong>조합론적 영점 정리(Combinatorial Nullstellensatz)</strong>이다. 이 정리는 이후 수론, 그래프 이론, 극값 조합론 등 광범위한 분야에 걸쳐 강력한 도구로 자리잡았다.
+</p>
+
+<div class="theorem box">
+  <div class="box-label">Theorem &mdash; Combinatorial Nullstellensatz (Alon, 1999)</div>
+  <div class="box-title"></div>
+  $\mathbb{F}$를 임의의 체(field)라 하고, $f \in \mathbb{F}[x_1, x_2, \ldots, x_n]$를 차수가 $t_1 + t_2 + \cdots + t_n$인 다항식이라 하자. $S_1, S_2, \ldots, S_n$이 $\mathbb{F}$의 공집합 아닌 부분집합들로, 각 $i$에 대해 $|S_i| \geq t_i + 1$을 만족한다고 하자. 만약 $f$에서 $x_1^{t_1} x_2^{t_2} \cdots x_n^{t_n}$의 계수가 0이 아니라면, 다음을 만족하는 $s_1 \in S_1, s_2 \in S_2, \ldots, s_n \in S_n$이 존재한다:
+  $$f(s_1, s_2, \ldots, s_n) \neq 0$$
+</div>
+
+<p>
+이 정리의 대우 명제는 다음과 같다: <em>"$f$가 $S_1 \times \cdots \times S_n$ 위의 모든 점에서 0이라면, $f$의 $x_1^{t_1} \cdots x_n^{t_n}$ 항의 계수는 반드시 0이다."</em>
+</p>
+
+<div class="remark box">
+  <div class="box-label">역사적 맥락</div>
+  이 정리의 이름에서 "Nullstellensatz"는 독일어로 "영점(null = zero)에 관한 정리(satz = theorem)"를 뜻한다. 힐베르트의 고전적 영점 정리(Hilbert's Nullstellensatz, 1893)가 대수기하학의 초석이라면, Alon의 조합론적 버전은 유한 집합 위에서의 조합론적 문제에 맞게 설계된 것이다.
+</div>
+
+<!-- ===== 2. 기초 개념 ===== -->
+<!-- b. 기초 개념 -->
+<h3 class="content-section" id="foundations"><span class="section-letter">b.</span> 기초 개념</h3>
+
+<h4 class="subsection">b.1 체(Field)란 무엇인가</h4>
+
+<div class="definition box">
+  <div class="box-label">Definition</div>
+  <strong>체(Field)</strong>는 집합 $\mathbb{F}$와 두 이항연산 $+$(덧셈), $\cdot$(곱셈)의 쌍 $(\mathbb{F}, +, \cdot)$으로, 다음 공리를 모두 만족하는 것이다:
+  <ol style="padding-left:20px; margin-top:10px; line-height:2.2;">
+    <li><strong>덧셈에 대한 교환법칙:</strong> $a + b = b + a$</li>
+    <li><strong>덧셈에 대한 결합법칙:</strong> $(a+b)+c = a+(b+c)$</li>
+    <li><strong>덧셈의 항등원:</strong> $a + 0 = a$인 $0 \in \mathbb{F}$ 존재</li>
+    <li><strong>덧셈의 역원:</strong> $a + (-a) = 0$인 $-a \in \mathbb{F}$ 존재</li>
+    <li><strong>곱셈에 대한 교환법칙:</strong> $a \cdot b = b \cdot a$</li>
+    <li><strong>곱셈에 대한 결합법칙:</strong> $(a \cdot b) \cdot c = a \cdot (b \cdot c)$</li>
+    <li><strong>곱셈의 항등원:</strong> $a \cdot 1 = a$인 $1 \in \mathbb{F}$ 존재 ($1 \neq 0$)</li>
+    <li><strong>곱셈의 역원:</strong> $a \neq 0$이면 $a \cdot a^{-1} = 1$인 $a^{-1} \in \mathbb{F}$ 존재</li>
+    <li><strong>분배법칙:</strong> $a \cdot (b+c) = a \cdot b + a \cdot c$</li>
+  </ol>
+</div>
+
+<p>쉽게 말해 체는 덧셈, 뺄셈, 곱셈, 나눗셈(단, 0으로 나누는 것 제외)이 모두 자유롭게 되는 수 체계이다.</p>
+
+<div class="example-box">
+  <div class="box-label">예시</div>
+  <table>
+    <thead><tr><th>이름</th><th>기호</th><th>원소</th><th>특징</th></tr></thead>
+    <tbody>
+      <tr><td>유리수 체</td><td>$\mathbb{Q}$</td><td>$0, 1, \frac{1}{2}, -3, \ldots$</td><td>무한 체</td></tr>
+      <tr><td>실수 체</td><td>$\mathbb{R}$</td><td>$\sqrt{2}, \pi, e, \ldots$</td><td>무한 체</td></tr>
+      <tr><td>복소수 체</td><td>$\mathbb{C}$</td><td>$i, 1+2i, \ldots$</td><td>대수적으로 닫힌 체</td></tr>
+      <tr><td>소수 모듈로 체</td><td>$\mathbb{Z}_p$</td><td>$\{0, 1, \ldots, p-1\}$</td><td><strong>유한 체</strong></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h4 class="subsection">b.2 유한체 $\mathbb{Z}_p$</h4>
+
+<p>
+조합론에서 가장 자주 등장하는 체는 소수 $p$에 대한 <strong>$\mathbb{Z}_p = \{0, 1, 2, \ldots, p-1\}$</strong>이다. 연산은 $p$로 나눈 나머지로 정의한다. 예를 들어 $\mathbb{Z}_5$에서는 $3 + 4 = 2$, $3 \times 4 = 2$이다.
+</p>
+
+<p>$p$가 소수일 때만 $\mathbb{Z}_p$가 체가 됨을 주의하라. $\mathbb{Z}_4$는 체가 아니다: $2 \times 2 = 0$이지만 $2 \neq 0$이므로, 0이 아닌 수의 곱이 0이 될 수 있어 곱셈의 역원이 존재하지 않는다.</p>
+
+<div class="theorem box">
+  <div class="box-label">Fact — 페르마의 소정리 (Fermat's Little Theorem)</div>
+  소수 $p$와 $p \nmid x$인 정수 $x$에 대해:
+  $$x^{p-1} \equiv 1 \pmod{p}$$
+  이는 $\mathbb{Z}_p$에서 모든 비영(non-zero) 원소의 $(p-1)$제곱이 1임을 뜻한다.
+</div>
+
+<h4 class="subsection">b.3 다변수 다항식환 $\mathbb{F}[x_1, \ldots, x_n]$</h4>
+
+<div class="definition box">
+  <div class="box-label">Definition</div>
+  체 $\mathbb{F}$ 위의 <strong>다변수 다항식</strong>은 다음 형태의 유한합이다:
+  $$f(x_1, \ldots, x_n) = \sum_{(e_1, \ldots, e_n)} c_{e_1 \cdots e_n} \cdot x_1^{e_1} x_2^{e_2} \cdots x_n^{e_n}$$
+  여기서 $c_{e_1 \cdots e_n} \in \mathbb{F}$이고 $e_i \geq 0$은 정수이다. 각 $x_1^{e_1} \cdots x_n^{e_n}$를 <strong>단항식(monomial)</strong>이라 한다.
+  <br><br>
+  단항식 $x_1^{e_1} \cdots x_n^{e_n}$의 <strong>차수(degree)</strong>는 $e_1 + \cdots + e_n$이다. 다항식 $f$의 차수는 계수가 0이 아닌 단항식들 중 가장 큰 차수이다.
+</div>
+
+<div class="example-box">
+  <div class="box-label">예시</div>
+  $f(x, y) = 3x^2y + xy^2 - 7$에서
+  <ul style="padding-left:20px; margin-top:8px; line-height:2.2;">
+    <li>단항식 $x^2 y$의 차수: $2+1=3$</li>
+    <li>단항식 $xy^2$의 차수: $1+2=3$</li>
+    <li>$f$의 차수: $3$</li>
+    <li>$x^2 y$의 계수: $3$</li>
+  </ul>
+</div>
+
+<h4 class="subsection">b.4 핵심 관찰: 1변수 다항식의 근</h4>
+
+<div class="theorem box">
+  <div class="box-label">Theorem 0 — 기본 관찰</div>
+  $f \in \mathbb{F}[x]$가 차수 $t$인 다항식이고 $S \subseteq \mathbb{F}$가 $|S| \geq t+1$이면:
+  $$\exists\, s \in S : f(s) \neq 0$$
+</div>
+
+<div class="proof">
+  <div class="proof-header">증명</div>
+  $f$는 차수 $t$이므로 $\mathbb{F}[x]$에서 근을 최대 $t$개 가진다. $|S| \geq t+1$이므로 $S$에는 $f$의 근이 아닌 원소가 적어도 하나 존재한다.
+  <div class="qed">$\square$</div>
+</div>
+
+<p>Theorem은 이것의 다변수 버전이다. 그러나 단순히 "변수 수를 늘리는 것"만으로는 충분하지 않다. 예를 들어 $f(x,y) = (x-1)(y-1)$은 $S_1 = S_2 = \{1\}$ 위에서 항등적으로 0이지만, 각 변수의 차수는 1이다. 추가적인 조건—특정 최고차 단항식의 계수가 0이 아닐 것—이 필요한 이유가 바로 여기에 있다.</p>
+
+<!-- ===== 3. 증명 ===== -->
+<!-- c. 정리의 엄밀한 증명 -->
+<h3 class="content-section" id="proof"><span class="section-letter">c.</span> 정리의 엄밀한 증명</h3>
+
+<p>증명은 두 단계로 이루어진다: 먼저 핵심 보조정리(Lemma)를 증명하고, 이로부터 주정리(Theorem)를 도출한다.</p>
+
+<div class="lemma box">
+  <div class="box-label">Lemma — Alon (1999)</div>
+  $f \in \mathbb{F}[x_1, \ldots, x_n]$이고 $S_1, \ldots, S_n$이 $\mathbb{F}$의 공집합 아닌 부분집합이라 하자. 모든 $(s_1, \ldots, s_n) \in S_1 \times \cdots \times S_n$에 대해 $f(s_1, \ldots, s_n) = 0$이면, 다음을 만족하는 다항식들 $h_1, \ldots, h_n \in \mathbb{F}[x_1, \ldots, x_n]$이 존재한다:
+  $$f = \sum_{i=1}^n h_i \cdot g_i, \qquad \text{단 } g_i(x_i) = \prod_{s \in S_i}(x_i - s)$$
+</div>
+
+<h4 class="subsection">c.1 Lemma의 증명</h4>
+
+<p>$n$에 대한 수학적 귀납법으로 증명한다.</p>
+
+<div class="proof">
+  <div class="proof-header">증명 (수학적 귀납법)</div>
+
+  <div class="step">
+    <span class="step-num">$n = 1$의 경우</span>
+    <p style="margin-top:10px;">
+    $f \in \mathbb{F}[x_1]$이 모든 $s_1 \in S_1$에서 0이면, $S_1$의 각 원소가 $f$의 근이다. 따라서 $f$는 $g_1(x_1) = \prod_{s \in S_1}(x_1 - s)$로 나누어 떨어진다. 즉, $f = h_1 \cdot g_1$인 $h_1 \in \mathbb{F}[x_1]$이 존재한다.
+    </p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">귀납 가정</span>
+    <p style="margin-top:10px;">
+    $n-1$개의 변수에 대해 명제가 성립한다고 가정한다. 즉, 어떤 다항식이 $S_1 \times \cdots \times S_{n-1}$ 위에서 항등적으로 0이면 $h_1, \ldots, h_{n-1}$을 이용한 분해가 존재한다.
+    </p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">귀납 과정</span>
+    <p style="margin-top:10px;">
+    $f$를 $x_n$에 대한 다항식으로 보고, $g_n(x_n) = \prod_{s \in S_n}(x_n - s)$로 다항식 나눗셈을 수행한다:
+    $$f(x_1, \ldots, x_n) = h_n(x_1, \ldots, x_n) \cdot g_n(x_n) + r(x_1, \ldots, x_n)$$
+    여기서 나머지 $r$은 $x_n$에 대한 차수가 $|S_n| - 1$ 이하이다.
+    <br><br>
+    이제 임의의 $s_n \in S_n$을 고정하자. $g_n(s_n) = 0$이므로:
+    $$r(x_1, \ldots, x_{n-1}, s_n) = f(x_1, \ldots, x_{n-1}, s_n)$$
+    가정에 의해, $f$는 $S_1 \times \cdots \times S_n$ 위에서 0이므로 모든 $(s_1, \ldots, s_{n-1}) \in S_1 \times \cdots \times S_{n-1}$에 대해:
+    $$r(s_1, \ldots, s_{n-1}, s_n) = 0$$
+    이는 각 $s_n \in S_n$에서 성립한다.
+    <br><br>
+    즉, $x_n = s_n$으로 고정된 다항식 $r(\cdot, s_n) : \mathbb{F}^{n-1} \to \mathbb{F}$는 $S_1 \times \cdots \times S_{n-1}$ 위에서 항등적으로 0이다. <strong>귀납 가정</strong>에 의해:
+    $$r(x_1,\ldots,x_{n-1}, s_n) = \sum_{i=1}^{n-1} h_i^{(s_n)}(x_1,\ldots,x_{n-1}) \cdot g_i(x_i)$$
+    인 다항식 $h_i^{(s_n)}$이 존재한다.
+    <br><br>
+    핵심 관찰: $r$의 $x_n$-차수는 $|S_n|-1$ 이하이고, $|S_n|$개의 점 $s_n \in S_n$에서의 값이 위와 같이 결정된다. $x_n$에 대한 다항식의 계수는 $|S_n|$개의 점에서의 값으로 유일하게 결정되므로(Lagrange 보간법), 각 계수 함수(in $x_1,\ldots,x_{n-1}$)에도 같은 분해가 성립한다. 따라서:
+    $$r(x_1, \ldots, x_n) = \sum_{i=1}^{n-1} h_i(x_1, \ldots, x_n) \cdot g_i(x_i)$$
+    인 $h_1, \ldots, h_{n-1} \in \mathbb{F}[x_1,\ldots,x_n]$이 존재한다.
+    <br><br>
+    이를 원래 식에 대입하면:
+    $$f = h_n \cdot g_n + \sum_{i=1}^{n-1} h_i \cdot g_i = \sum_{i=1}^{n} h_i \cdot g_i$$
+    </p>
+  </div>
+  <div class="qed">$\square$</div>
+</div>
+
+<h4 class="subsection">c.2 Theorem의 증명</h4>
+
+<p>이제 Lemma로부터 주정리를 이끌어낸다. <strong>대우 명제</strong>를 증명한다:</p>
+
+<div class="highlight">
+  "모든 $(s_1, \ldots, s_n) \in S_1 \times \cdots \times S_n$에서 $f = 0$이라면, $f$의 $x_1^{t_1} \cdots x_n^{t_n}$ 항의 계수는 0이다."
+</div>
+
+<div class="proof">
+  <div class="proof-header">증명</div>
+  가정에 의해 $f$는 $S_1 \times \cdots \times S_n$ 위에서 항등적으로 0이다. Lemma를 적용하면:
+  $$f = \sum_{i=1}^n h_i \cdot g_i, \qquad g_i(x_i) = \prod_{s \in S_i}(x_i - s)$$
+  인 $h_1, \ldots, h_n$이 존재한다.
+  <br><br>
+  각 $g_i$의 $x_i$에 대한 차수는 $|S_i| \geq t_i + 1$이다.
+  <br><br>
+  이제 $f$에서 단항식 $x_1^{t_1} \cdots x_n^{t_n}$의 계수를 추적한다. $h_i \cdot g_i$에서 이 단항식이 나오려면, $g_i$에서 $x_i^{|S_i|}$ 이상의 항이 관여해야 하므로 $h_i$에서 $x_i$의 차수가:
+  $$t_i - |S_i| \leq t_i - (t_i+1) = -1$$
+  이어야 한다. 이는 불가능하다. 따라서 어떤 $h_i \cdot g_i$도 단항식 $x_1^{t_1} \cdots x_n^{t_n}$에 기여하지 못한다.
+  <br><br>
+  결론적으로 $f$에서 $x_1^{t_1} \cdots x_n^{t_n}$의 계수는 $0$이다. 이것의 대우가 바로 Theorem이다.
+  <div class="qed">$\square$</div>
+</div>
+
+<div class="remark box">
+  <div class="box-label"></div>
+  Lemma가 증명의 핵심 엔진이며, Theorem은 그 대우 명제를 읽은 것에 불과하다. 실질적인 수학적 내용은 모두 Lemma의 귀납법 안에 담겨 있다.
+</div>
+
+<!-- ===== 4. 관련 정리 ===== -->
+<!-- d. 관련 정리들 -->
+<h3 class="content-section" id="related"><span class="section-letter">d.</span> 관련 정리들</h3>
+
+<p>조합론적 영점 정리는 다음 정리들과 깊이 연결되어 있다.</p>
+
+<table>
+  <thead>
+    <tr><th>정리</th><th>내용</th><th>연결</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Cauchy-Davenport</strong></td>
+      <td>$|A+B| \geq \min(p, |A|+|B|-1)$</td>
+      <td>CN으로 가능</td>
+    </tr>
+    <tr>
+      <td><strong>Erdős-Heilbronn</strong></td>
+      <td>$|\{x+y \mid x,y\in A, x\neq y\}| \geq \min(p, 2|A|-3)$</td>
+      <td>CN의 응용</td>
+    </tr>
+    <tr>
+      <td><strong>Chevalley-Warning</strong></td>
+      <td>저차 다항식 시스템의 해의 개수 가 $p$의 배수</td>
+      <td>공통 기법 공유</td>
+    </tr>
+    <tr>
+      <td><strong>Hilbert's Nullstellensatz</strong></td>
+      <td>다항식 이상론의 기초 정리</td>
+      <td>이름의 유래와 개념적 조상</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 class="subsection">d.1 Chevalley-Warning 정리</h4>
+
+<div class="theorem box">
+  <div class="box-label">Theorem — Chevalley-Warning</div>
+  $f_1, \ldots, f_k \in \mathbb{Z}_p[x_1, \ldots, x_n]$이고 $\sum_{i=1}^k \deg f_i < n$이라 하자. 만약 이 다항식들이 공통 영점 $(c_1, \ldots, c_n)$을 가진다면, 다른 공통 영점도 존재한다.
+</div>
+
+<p>이 정리는 "변수의 수가 차수의 합을 초과할 때, 해가 있으면 반드시 두 개 이상 있다"는 것을 말한다. 조합론적 영점 정리와 비슷하게, 다항식의 차수와 변수/집합의 크기 사이의 관계가 핵심이다.</p>
+
+<!-- ===== 5. Cauchy-Davenport 증명 ===== -->
+<!-- e. 응용 증명: Cauchy-Davenport 정리 -->
+<h3 class="content-section" id="cauchy"><span class="section-letter">e.</span> 응용 증명: Cauchy-Davenport 정리</h3>
+
+<p>조합론적 영점 정리를 이용해 가장 고전적인 응용인 Cauchy-Davenport 정리를 증명한다.</p>
+
+<div class="theorem box">
+  <div class="box-label">Theorem — Cauchy-Davenport (1813, 1935)</div>
+  소수 $p$에 대해 $A, B \subseteq \mathbb{Z}_p$가 공집합이 아니라면:
+  $$|A + B| \geq \min(p,\ |A| + |B| - 1)$$
+  단, $A + B = \{a + b \mid a \in A,\ b \in B\}$이다.
+</div>
+
+<h4 class="subsection">e.1 핵심 아이디어: 다항식으로의 변환</h4>
+
+<p>
+$|A+B| < |A|+|B|-1$이라고 가정하면 모순을 이끌어낼 것이다. $C = A+B$로 놓으면 $|C| \leq |A|+|B|-2$이다.
+</p>
+
+<p>다음 다항식을 구성한다:</p>
+
+$$f(x, y) = \prod_{c \in C}(x + y - c) \in \mathbb{Z}_p[x, y]$$
+
+<p>이 다항식의 성질:</p>
+<ul style="padding-left:22px; line-height:2.2; margin-bottom:14px;">
+  <li>모든 $a \in A$, $b \in B$에 대해 $a+b \in C$이므로, $f(a, b) = 0$</li>
+  <li>따라서 $f$는 $A \times B$ 위에서 항등적으로 0</li>
+  <li>$f$의 차수는 $|C|$이고, $x$와 $y$에 대한 전개 시 $x^k y^{|C|-k}$ 꼴의 항을 포함</li>
+</ul>
+
+<h4 class="subsection">e.2 계수 분석</h4>
+
+<p>$f(x,y) = \prod_{c \in C}(x+y-c)$를 전개하면:</p>
+
+$$f(x,y) = \sum_{k=0}^{|C|} \binom{|C|}{k} x^k y^{|C|-k} + \text{(낮은 차수 항들)}$$
+
+<p>특히 $x^{|A|-1} y^{|B|-1}$의 계수를 보자. $|A|-1 + |B|-1 = |A|+|B|-2 \geq |C|$ (귀류 가정)이므로, 이 단항식의 차수가 $|C|$와 같거나 작아 이 항이 $f$에 존재한다. 그 계수는:</p>
+
+$$[x^{|A|-1}y^{|B|-1}]f = \binom{|C|}{|A|-1}$$
+
+<p>이 이항계수가 $\mathbb{Z}_p$에서 0이 아님을 확인해야 한다. $|A|, |B| \leq p$이고 $|C| \leq |A|+|B|-2 \leq 2p-2 < 2p$이므로, $\binom{|C|}{|A|-1}$의 분자와 분모 모두 $p$ 미만의 인수들의 곱이어서 $p$로 나누어 떨어지지 않는다.</p>
+
+<h4 class="subsection">e.3 Theorem 적용으로 모순 도출</h4>
+
+<p>$f$가 $A \times B$ 위에서 항등적으로 0이고, $|A| \geq |A|-1+1$, $|B| \geq |B|-1+1$이며, $x^{|A|-1}y^{|B|-1}$의 계수가 0이 아니다. 이는 Theorem (대우)의 전제를 모두 만족한다.</p>
+
+<p>Theorem에 의하면: $f$가 $A \times B$ 위에서 항등적으로 0이면 $x^{|A|-1}y^{|B|-1}$의 계수가 0이어야 한다. 그런데 위에서 이 계수가 0이 아님을 보였다.</p>
+
+<div class="highlight">
+  모순! 따라서 귀류 가정 $|C| \leq |A|+|B|-2$는 거짓이다. 즉, $|A+B| \geq |A|+|B|-1$이다. $\square$
+</div>
+
+<div class="remark box">
+  <div class="box-label">증명 전략 도식화</div>
+  <div style="font-family:'Noto Sans KR',sans-serif; font-size:14px; line-height:2.2;">
+  "$|A+B|$가 너무 작다" 귀류 가정<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+  $f(x,y) = \prod_{c \in C}(x+y-c)$: $A \times B$ 위에서 항등적으로 0<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+  $x^{|A|-1}y^{|B|-1}$의 계수 = $\binom{|C|}{|A|-1} \neq 0$ (in $\mathbb{Z}_p$)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+  Theorem (대우): 계수 $\neq 0$이면 항등적으로 0일 수 없음<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+  <strong>모순 → $|A+B| \geq |A|+|B|-1$</strong>
+  </div>
+</div>
+
+<!-- ===== 6. 연습 문제 풀이 ===== -->
+<!-- f. 연습 문제 풀이 -->
+<h3 class="content-section" id="problems"><span class="section-letter">f.</span> 연습 문제 풀이</h3>
+
+<p>이하에서 $p$는 항상 홀수 소수를 뜻한다.</p>
+
+<div class="problem-box">
+  <div class="problem-num">Problem 3 (학습지) — Cauchy-Davenport</div>
+  <p>$A$, $B$가 $\mathbb{Z}_p$의 부분집합이면, $|A+B| \geq \min(p, |A|+|B|-1)$을 증명하라.</p>
+  <div class="solution">
+    <div class="solution-header">풀이</div>
+    위 §5에서 상세히 증명하였다. 핵심은 $f(x,y) = \prod_{c \in A+B}(x+y-c)$를 구성하여, 귀류 가정 하에서 특정 계수가 동시에 0이면서 0이 아닌 모순을 이끌어내는 것이다.
+  </div>
+</div>
+
+<div class="problem-box">
+  <div class="problem-num">Problem 5 (학습지) — Chevalley-Warning</div>
+  <p>$f_1, \ldots, f_k \in \mathbb{Z}_p[x_1, \ldots, x_n]$이고 $\sum_{i=1}^k \deg f_i < n$이라 하자. 이 다항식들이 공통 영점 $(c_1, \ldots, c_n)$을 가지면 다른 공통 영점이 존재함을 보여라.</p>
+  <div class="solution">
+    <div class="solution-header">풀이</div>
+    <p><strong>다항식 구성.</strong> 페르마의 소정리에 의해 $\mathbb{Z}_p$에서:</p>
+    $$x^{p-1} = \begin{cases} 0 & x = 0 \\ 1 & x \neq 0 \end{cases}$$
+    따라서 $1 - f_i(\mathbf{x})^{p-1}$은 $f_i(\mathbf{x}) = 0$일 때 1, 아닐 때 0이다. 공통 영점의 개수를 세는 다항식:
+    $$N = \sum_{\mathbf{x} \in \mathbb{Z}_p^n} \prod_{i=1}^k \bigl(1 - f_i(\mathbf{x})^{p-1}\bigr)$$
+    을 생각하자. $N$은 $f_1, \ldots, f_k$의 공통 영점의 수이다.
+    <br><br>
+    <strong>$N \equiv 0 \pmod{p}$ 증명.</strong> 위 곱을 전개하면, 각 항은 $f_{i_1}^{p-1} \cdots f_{i_r}^{p-1}$의 형태이다. 이 다항식의 차수는 $(p-1)\sum_{j} \deg f_{i_j} \leq (p-1)\sum_i \deg f_i < (p-1)n$이다.
+    <br><br>
+    핵심 보조 사실: $\mathbb{Z}_p$에서 $\sum_{x_1 \in \mathbb{Z}_p} \cdots \sum_{x_n \in \mathbb{Z}_p} x_1^{e_1} \cdots x_n^{e_n}$은 모든 $e_i$가 양의 $(p-1)$의 배수일 때만 $(-1)^n \neq 0$이고, 그렇지 않으면 0이다. 이는 $\sum_{x=0}^{p-1} x^e = 0$ (in $\mathbb{Z}_p$) if $0 < e < p-1$, $= -1$ if $(p-1) \mid e$ ($e > 0$)임으로부터 나온다.
+    <br><br>
+    $\sum_i \deg f_i < n$이므로, 모든 $e_i$가 $p-1$의 양의 배수가 되는 차수 $\sum_i (p-1)\deg f_i$를 가진 항이 나올 수 없다(각 $e_j \geq p-1$이면 $\sum e_j \geq n(p-1) > (p-1)\sum_i \deg f_i$). 따라서 $N \equiv 0 \pmod{p}$.
+    <br><br>
+    <strong>결론.</strong> 가정에 의해 $(c_1, \ldots, c_n)$이 공통 영점으로 존재하므로 $N \geq 1$이다. $N \equiv 0 \pmod{p}$이고 $N \geq 1$이면 $N \geq p \geq 2$이다. 따라서 공통 영점이 두 개 이상 존재한다.
+  </div>
+</div>
+
+<div class="problem-box">
+  <div class="problem-num">Problem 2 (학습지) — IMO 2007 Problem 6</div>
+  <p>양의 정수 $n$에 대해 $S = \{(x,y,z) \mid x,y,z \in \{0,1,\ldots,n\},\ (x,y,z) \neq (0,0,0)\}$을 $(n+1)^3 - 1$개의 점의 집합이라 하자. $S$를 포함하지만 $(0,0,0)$은 포함하지 않는 평면들의 합집합을 이루는 평면의 최솟값을 구하라.</p>
+  <div class="solution">
+    <div class="solution-header">풀이 — 답: $3n$</div>
+    <p><strong>하한: $3n$개 미만으로는 불가.</strong></p>
+    <p>$m$개의 평면 $H_1, \ldots, H_m$이 $(0,0,0)$을 피하면서 $S$를 덮는다고 하자. 각 평면의 방정식을 $\ell_i(x,y,z) = a_i x + b_i y + c_i z + d_i$로 쓰면, 조건에 의해 $\ell_i(0,0,0) = d_i \neq 0$이다. 따라서 $\tilde{\ell}_i = \ell_i / d_i$로 정규화하면 $\tilde{\ell}_i(0,0,0) = 1$이다.
+    <br><br>
+    $f(x,y,z) = \prod_{i=1}^{m}(1 - \tilde{\ell}_i(x,y,z))$로 놓자.
+    <ul style="padding-left:22px; margin-top:8px; line-height:2.2;">
+      <li>$f(0,0,0) = \prod_i (1-1) = 1$ (각 $\tilde{\ell}_i(0,0,0)=1$이므로)를 잘못 계산함에 주의: $f(0,0,0)=\prod(1-1)=0$이 아니다. 오히려 $(1 - \tilde\ell_i(0,0,0))=(1-1)=0$이므로 $f(0,0,0)=0$. </li>
+    </ul>
+    다시 정의하자. $f(x,y,z) = \prod_{i=1}^{m} \tilde{\ell}_i(x,y,z)$로 놓자.
+    <ul style="padding-left:22px; margin-top:8px; line-height:2.2;">
+      <li>$S$의 모든 점 $(x,y,z)$에 대해 어떤 $\tilde\ell_i$가 0이 되므로, $f$는 $S$ 위에서 0</li>
+      <li>$f(0,0,0) = \prod_i \tilde\ell_i(0,0,0) = 1^m = 1 \neq 0$</li>
+    </ul>
+    이제 $x^n y^n z^n$의 계수를 추적한다. 정리를 실수 위에서 쓰기 위해, 0이 아닌 계수를 갖는 최고차 단항식으로 $x^n y^n z^n$이 나타나야 함을 보인다.
+    <br><br>
+    각 $\tilde\ell_i$는 1차이고, $m$개의 곱이므로 $f$의 차수는 $m$이다. $f$가 $\{0,1,\ldots,n\}^3 \setminus \{(0,0,0)\}$에서 0이고 $(0,0,0)$에서 1이므로, $f - g$를 고려하면 $g = \prod_{k=1}^n(x-k)\cdot\prod_{k=1}^n(y-k)\cdot\prod_{k=1}^n(z-k)$는... (이 방향의 정밀한 분석을 위해 Alon의 원래 논증을 따른다.)
+    <br><br>
+    <strong>Alon의 논증:</strong> $m < 3n$이면 $f = \prod_{i=1}^m \ell_i$ (각 $\ell_i$는 원점을 지나지 않는 1차식)의 차수가 $m < 3n$이다. 그런데 $f$는 $\{0,\ldots,n\}^3$ 위에서 $(x,y,z)=(0,0,0)$일 때만 0이 아니다. 더 구체적으로, $q(x,y,z) = \prod_{k=0}^{n}(x-k) + \prod_{k=0}^{n}(y-k) + \prod_{k=0}^{n}(z-k)$... 사실 가장 깔끔한 논증은 다음과 같다.
+    <br><br>
+    <strong>핵심 관찰:</strong> 어떤 다항식 $P$가 $\{0,\ldots,n\}^3$ 위에서 오직 $(0,0,0)$에서만 0이 아니라면, $P$를 $\{0,\ldots,n\}^3$ 전체에서 보간할 때 $x^n y^n z^n$ 항이 나타나야 한다. 이 단항식의 차수는 $3n$이므로 $\deg P \geq 3n$, 즉 $m \geq 3n$.
+    <br><br>
+    <strong>상한: $3n$개로 가능.</strong> 다음 $3n$개의 평면이 조건을 만족한다:
+    $$x = k, \quad y = k, \quad z = k \qquad (k = 1, 2, \ldots, n)$$
+    각 점 $(x,y,z) \in S$는 $x,y,z$ 중 적어도 하나가 $1 \leq k \leq n$을 만족하므로 위 평면 중 하나에 속한다. $(0,0,0)$은 $x=y=z=0$이므로 어떤 평면에도 속하지 않는다.
+    <br><br>
+    따라서 답은 $\boxed{3n}$이다.
+  </div>
+</div>
+
+<div class="problem-box">
+  <div class="problem-num">Problem 4 (학습지) — Erdős-Heilbronn 추측</div>
+  <p>$A \subseteq \mathbb{Z}_p$에 대해 $|\{x+y \mid x,y \in A,\ x \neq y\}| \geq \min(p, 2|A|-3)$을 보여라.</p>
+  <div class="solution">
+    <div class="solution-header">풀이 개요 (Alon-Nathanson-Ruzsa, 1995)</div>
+    <p>$C = \{x+y \mid x,y\in A,\ x\neq y\}$, $|A|=m$으로 놓고 $|C| \leq 2m-4$라 가정한다.</p>
+    <p>다항식 구성:</p>
+    $$f(x,y) = (x-y)\prod_{c \in C}(x+y-c)$$
+    <ul style="padding-left:22px; line-height:2.2; margin-top:8px;">
+      <li>$x \neq y$이고 $x,y \in A$이면 $x+y \in C$이므로 $f(x,y)=0$</li>
+      <li>$x = y$이면 $(x-y)=0$이므로 $f(x,y)=0$</li>
+      <li>따라서 $f$는 $A \times A$ 위에서 항등적으로 0</li>
+    </ul>
+    <p>$f$의 차수는 $1 + |C| \leq 2m-3$이다. $x^{m-1}y^{m-2}$ 항 (차수 $2m-3$)의 계수를 계산하면:</p>
+    $$[x^{m-1}y^{m-2}]f = [x^{m-2}y^{m-2}]\prod_{c\in C}(x+y-c) - [x^{m-1}y^{m-3}]\prod_{c\in C}(x+y-c)$$
+    $$= \binom{|C|}{m-2} - \binom{|C|}{m-1}$$
+    이 값이 $\mathbb{Z}_p$에서 0인지 아닌지가 결정적이다. 구체적으로는 이 두 이항계수의 차이가 $\frac{|C|+1-2(m-1)}{m-1}\binom{|C|}{m-2}$에 비례하는데, $|C| = 2m-4$일 때 이 값이 $-1 \cdot \binom{2m-4}{m-2}$가 되어 0이 아님(소수 $p > 2m-3$)을 보인다.
+    <br><br>
+    $|A| = m$, $|A| = m \geq (m-1)+1$이고 위 계수가 0이 아니므로 Theorem에 의해 $f$가 $A \times A$ 위에서 항등적으로 0일 수 없어 모순이다. 따라서 $|C| \geq 2m-3$.
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ===== 느낀 점 ===== -->
+<h2 class="section-title no-counter" id="feeling">조사 감상</h2>
+
+<div class="feeling">
+  <p>
+  처음에는 정리의 주장 자체가 낯설었다. 다변수 다항식이 어떤 격자 위에서 항등적으로 0이 될 수 없다는 것이, 단순히 차수 하나만 보던 1변수 때와 달리 왜 특정 항의 계수까지 요구하는지 바로 와닿지 않았다. Lemma의 귀납 구조를 따라가면서 그 이유가 서서히 이해됐다.
+  </p>
+  <p>
+  가장 인상적이었던 부분은 Cauchy-Davenport 증명이었다. 합집합의 크기에 관한 조합론적 명제를, 다항식을 하나 만들어서 계수 하나를 추적하는 것으로 해결한다는 게 신기했다. 다항식을 구성하고 그게 어떤 집합 위에서 0임을 확인한 다음 특정 항의 계수를 양쪽에서 비교해 모순을 보인다. 이것을 알고 나니 나머지 응용들이 훨씬 빠르게 읽혔다.
+  </p>
+  <p>
+  정리가 성립하는 체의 범위가 꽤 넓다는 점도 흥미로웠다. 나중에 기회가 된다면 체가 아닌 구조로 이 정리를 확장하는 시도들도 살펴보고 싶다.
+  </p>
+</div>
+
+<!-- ===== 참고문헌 ===== -->
+<h2 class="section-title no-counter" id="references">참고 문헌 및 출처</h2>
+
+<ol class="references">
+  <li>N. Alon, "Combinatorial Nullstellensatz", <em>Combinatorics, Probability and Computing</em> 8 (1999).</li>
+  <li>N. Alon, M. B. Nathanson, I. Z. Ruzsa, "The polynomial method and restricted sums of congruence classes", <em>J. Number Theory</em> 56 (1996).</li>
+  <li>M. Michałek, "A short proof of Combinatorial Nullstellensatz", <em>arXiv</em> 0904.4573 (2009).</li>
+  <li>E. Chen, "Combinatorial Nullstellensatz", Berkeley Math Circle lecture notes (2013).</li>
+  <li>Y. Alexandr, "Combinatorial Nullstellensatz", Honors thesis, Wesleyan University (2019).</li>
+</ol>
+
+</div>
+</body>
+</html>
