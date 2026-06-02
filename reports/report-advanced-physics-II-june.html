@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>물리학 관점에서 본 전자 정보 통신 기술</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@400;500&family=JetBrains+Mono&display=swap');
+
+  :root {
+    --primary: #700428;
+    --accent:  #a42e32;
+    --light-red: #ffb4c2;
+    --mid-red:   #eec5d5;
+    --text:   #1c1c1c;
+    --muted:  #555;
+    --border: #ec0047;
+    --bg:     #fdfafb;
+    --theorem-bg:    #fbeef0;
+    --proof-bg:      #f9f9f9;
+    --definition-bg: #f0f7ee;
+    --definition-border: #1d6a2e;
+    --remark-bg:     #fff8e8;
+    --remark-border: #a88600;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Serif KR', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--text);
+    background: var(--bg);
+    padding: 0;
+    counter-reset: section;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background: var(--primary);
+    color: white;
+    padding: 80px 60px 60px;
+    min-height: 240px;
+    position: relative;
+  }
+  .cover-subtitle {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--mid-red);
+    margin-bottom: 18px;
+  }
+  .cover h1 {
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+  .cover-en {
+    font-size: 18px;
+    color: var(--mid-red);
+    font-style: italic;
+    margin-bottom: 30px;
+  }
+  .cover-meta {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    color: #c1c1c1;
+    border-top: 1px solid rgba(255,255,255,0.25);
+    padding-top: 18px;
+    margin-top: 10px;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    background: white;
+    border-left: 4px solid var(--accent);
+    margin: 40px 60px;
+    padding: 28px 32px;
+    border-radius: 0 6px 6px 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .toc h2 {
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .toc ol { padding-left: 20px; }
+  .toc li {
+    font-size: 14px;
+    line-height: 2;
+    color: var(--primary);
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .toc li a { color: inherit; text-decoration: none; }
+  .toc li a:hover { text-decoration: underline; }
+  .toc ol ol { margin-top: 2px; }
+  .toc ol ol li { font-size: 13px; color: var(--muted); }
+
+  /* ── CONTENT ── */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 20px 60px 80px;
+  }
+
+  h2.section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 56px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    counter-increment: section;
+  }
+  h2.section-title::before {
+    content: counter(section) ". ";
+    color: var(--accent);
+  }
+  h2.section-title.no-counter { counter-increment: none; }
+  h2.section-title.no-counter::before { content: none; }
+
+  h3.subsection {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--primary);
+    margin: 32px 0 14px;
+  }
+  h4.subsection {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary);
+    margin: 28px 0 12px;
+  }
+
+  p { margin-bottom: 14px; }
+
+  /* ── BOXES ── */
+  .box {
+    border-radius: 6px;
+    padding: 22px 26px;
+    margin: 24px 0;
+  }
+  .box-label {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .box-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--primary);
+  }
+
+  .theorem { background: var(--theorem-bg); border-left: 4px solid var(--accent); }
+  .theorem .box-label { color: var(--accent); }
+
+  .definition { background: var(--definition-bg); border-left: 4px solid var(--definition-border); }
+  .definition .box-label { color: var(--definition-border); }
+
+  .lemma { background: #f3edfb; border-left: 4px solid #7c4dbb; }
+  .lemma .box-label { color: #7c4dbb; }
+
+  .remark { background: var(--remark-bg); border-left: 4px solid var(--remark-border); }
+  .remark .box-label { color: var(--remark-border); }
+
+  .proof {
+    background: var(--proof-bg);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 20px 26px;
+    margin: 16px 0 28px;
+  }
+  .proof-header {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .highlight {
+    background: var(--light-red);
+    border-radius: 4px;
+    padding: 12px 18px;
+    margin: 16px 0;
+    color: var(--primary);
+    border-left: 3px solid var(--accent);
+  }
+
+  /* ── TABLE ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  thead { background: var(--primary); color: white; }
+  th { padding: 10px 14px; text-align: left; font-weight: 600; font-size: 13px; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e0e0e0; vertical-align: top; line-height: 1.6; }
+  tr:nth-child(even) td { background: #f4f7fb; }
+  .tbl-caption {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: -14px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  /* ── DERIVE BLOCK ── */
+  .derive {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+  .derive-head {
+    background: var(--primary);
+    color: white;
+    padding: 8px 18px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .derive-body { padding: 16px 22px; }
+  .derive-body p { font-size: 14px; }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  blockquote {
+    border-left: 3px solid var(--border);
+    padding-left: 18px;
+    color: var(--muted);
+    font-style: italic;
+    margin: 16px 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ COVER ══ -->
+<div class="cover">
+  <div class="cover-subtitle">물리학 심화 탐구 보고서</div>
+  <h1>물리학 관점에서 본<br>전자 정보 통신 기술</h1>
+  <div class="cover-en">Electromagnetic Physics to Information Theory</div>
+  <div class="cover-meta">
+    3611 이준규 &nbsp;|&nbsp; WITH HTML5
+  </div>
+</div>
+
+<!-- ══ TOC ══ -->
+<div class="toc">
+  <h2>목차</h2>
+  <ol>
+    <li><a href="#sec1">전자기파</a>
+      <ol>
+        <li><a href="#sec1-1">맥스웰 방정식이 예언한 것</a></li>
+        <li><a href="#sec1-2">파동 방정식의 유도</a></li>
+        <li><a href="#sec1-3">기저대역 신호를 직접 송신하지 않는 이유</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec2">PSK: 위상으로 정보를 담는 방법</a></li>
+    <li><a href="#sec3">QAM: 진폭과 위상을 함께 제어하다</a></li>
+    <li><a href="#sec4">현실 채널의 물리적 왜곡</a>
+      <ol>
+        <li><a href="#sec4-1">열잡음</a></li>
+        <li><a href="#sec4-2">다중 경로 페이딩</a></li>
+        <li><a href="#sec4-3">부호 간 간섭(ISI)</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec5">섀넌–하틀리 정리</a></li>
+    <li><a href="#sec6">OFDM: ISI를 물리학으로 해결하다</a></li>
+    <li><a href="#sec7">물리에서 알고리즘까지</a></li>
+  </ol>
+</div>
+
+<!-- ══ CONTENT ══ -->
+<div class="content">
+
+<!-- ===== 1 ===== -->
+<h2 class="section-title" id="sec1">전자기파</h2>
+
+<h3 class="subsection" id="sec1-1">a. 맥스웰 방정식이 예언한 것</h3>
+
+<p>무선 통신의 역사는 1865년의 이론적 예언에서 시작된다. 맥스웰은 패러데이, 앙페르, 가우스가 각자 발견한 전자기 법칙들을 하나의 체계로 정리하는 과정에서 아무도 예상하지 못한 결과를 이끌어냈다. 전기장과 자기장이 서로를 유도하며 공간 속으로 퍼져나가는 파동, 즉 <strong>전자기파(electromagnetic wave)</strong>의 존재였다.</p>
+
+<p>전기장의 변화가 자기장을 만들어내고, 그 자기장의 변화가 다시 전기장을 만들어내는 과정이 공간을 통해 전개된다. 매질이 필요 없다. 전하와 전류가 없는 자유 공간에서 맥스웰의 네 방정식은 다음과 같다.</p>
+
+<div class="theorem box">
+  <div class="box-label">Maxwell's Equations (Free Space)</div>
+  $$\nabla \cdot \mathbf{E} = 0 \tag{1}$$
+  $$\nabla \cdot \mathbf{B} = 0 \tag{2}$$
+  $$\nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t} \tag{3}$$
+  $$\nabla \times \mathbf{B} = \mu_0 \varepsilon_0 \frac{\partial \mathbf{E}}{\partial t} \tag{4}$$
+</div>
+
+<div class="remark box">
+  <div class="box-label">순환 구조</div>
+  식의 (3)과 (4)를 통해 알 수 있다. <em>"자기장이 변하면 전기장이 생기고, 전기장이 변하면 자기장이 생긴다."</em>
+</div>
+
+<h3 class="subsection" id="sec1-2">b. 파동 방정식의 유도</h3>
+
+<p>패러데이 법칙 (3)의 양변에 회전($\nabla\times$)을 취하고, 벡터 항등식과 나머지 방정식을 대입하면 전기장에 대한 파동 방정식이 유도된다.</p>
+
+<div class="derive">
+  <div class="derive-head">유도 과정</div>
+  <div class="derive-body">
+    <p>패러데이 법칙 (3)에 $\nabla\times$를 취한다.</p>
+    $$\nabla \times (\nabla \times \mathbf{E}) = -\frac{\partial}{\partial t}(\nabla \times \mathbf{B})$$
+    <p>우변에 (4)를 대입하면,</p>
+    $$\nabla \times (\nabla \times \mathbf{E}) = -\mu_0\varepsilon_0 \frac{\partial^2 \mathbf{E}}{\partial t^2}$$
+    <p>벡터 항등식 $\nabla \times (\nabla \times \mathbf{E}) = \nabla(\nabla \cdot \mathbf{E}) - \nabla^2 \mathbf{E}$와 가우스 법칙 $\nabla \cdot \mathbf{E} = 0$을 적용하면,</p>
+    $$\boxed{\nabla^2 \mathbf{E} = \mu_0\varepsilon_0 \frac{\partial^2 \mathbf{E}}{\partial t^2}}$$
+  </div>
+</div>
+
+<p>일반적인 파동 방정식 $\nabla^2 f = \frac{1}{v^2}\frac{\partial^2 f}{\partial t^2}$와 비교하면 전자기파의 전파 속도가 자연스럽게 얻어진다.</p>
+
+$$c = \frac{1}{\sqrt{\mu_0 \varepsilon_0}} \approx 2.998 \times 10^8 \;\text{m/s}$$
+
+<div class="remark box">
+  <div class="box-label">역사적 의의</div>
+  이 속도는 당시 이미 알려진 빛의 속도와 정확히 일치했다. <strong>빛 자체가 전자기파</strong>라는 사실을, 맥스웰은 누구도 빛과 전기를 연결 짓지 않던 시대에 방정식으로부터 이끌어낸 것이다. 1888년 헤르츠가 실험적으로 검증하면서 무선 통신의 가능성이 열렸다.
+</div>
+
+<p>$x$ 방향으로 전파하는 전자기파의 해는 다음과 같다.</p>
+
+$$\mathbf{E}(x,t) = E_0 \cos(kx - \omega t)\,\hat{y}, \qquad \mathbf{B}(x,t) = \frac{E_0}{c}\cos(kx - \omega t)\,\hat{z}$$
+
+<p>$\hat{x}$가 전파 방향일 때, $\mathbf{E}$는 $\hat{y}$, $\mathbf{B}$는 $\hat{z}$ 방향으로 진동한다. 두 장 모두 전파 방향에 수직인 <strong>횡파(transverse wave)</strong>다. 이는 우리가 수업 시간에 배웠듯 가우스 법칙이 파동이 진행하는 방향의 전기장 성분의 존재를 금지하기 때문이다.</p>
+
+<h3 class="subsection" id="sec1-3">c. 기저대역 신호를 직접 송신하지 않는 이유</h3>
+
+<p>음성이나 데이터 신호를 그냥 안테나에 연결할 수 없는 이유는 두 가지가 있다.</p>
+
+<p><strong>안테나 공명 조건.</strong> 안테나가 효율적으로 방사하려면 물리적 길이가 $\lambda/4$에 가까워야 한다. 음성 신호의 주요 주파수인 1 kHz에 대해 $\lambda = c/f = 300\,\text{km}$이므로 $\lambda/4 \approx 75\,\text{km}$ 안테나가 필요하다. 물리적으로 불가능하다. 반면 2.4 GHz 반송파를 사용하면 $\lambda/4 \approx 3\,\text{cm}$로 구현 가능하다.</p>
+
+<p><strong>주파수 다중화.</strong> 서로 다른 반송파 주파수를 배당받은 시스템들은 같은 공간에서 동시에 통신할 수 있다. 이 두 이유로 인해 정보 신호를 고주파 반송파에 실어서 송신하는 <strong>변조(modulation)</strong>가 필연적으로 요구된다.</p>
+
+<p>이때 반송파란 라디오나 Wi-Fi 등 무선 통신에서 정보 신호를 멀리 보내기 위해 사용하는 높은 주파수의 전자기파(사인파)라고 한다.</p>
+
+$$c(t) = A_c \cos(2\pi f_c t + \phi_c)$$
+
+<p>$A_c$는 진폭, $f_c$는 반송파 주파수, $\phi_c$는 초기 위상이다. 정보를 실는다는 것은 이 세 변수 중 하나 이상을 데이터에 따라 변화하는 것이며, 현대 통신의 모든 변조 방식이 이로부터 파생된다고 한다.</p>
+
+<!-- ===== 2 ===== -->
+<h2 class="section-title" id="sec2">PSK: 위상으로 정보를 담는 방법</h2>
+
+<h3 class="subsection">a. BPSK의 물리 직관</h3>
+
+<p>BPSK(Binary Phase-Shift Keying)는 위상 $\phi$를 $0$과 $\pi$ 두 가지로만 설정하여 각각 비트 1과 0에 대응한다.</p>
+
+$$s_\text{BPSK}(t) = A_c \cos(2\pi f_c t + m\pi),\quad m \in \{0, 1\}$$
+
+<p>$m = 1$이면 $A_c\cos(2\pi f_c t + \pi) = -A_c\cos(2\pi f_c t)$가 된다. 즉 비트 1을 전송할 때는 파동을 정확히 뒤집는다. 성좌도에서 두 점은 원점을 기준으로 정반대편에 위치하며, 점 간 거리 $2A_c$가 최대다.</p>
+
+<h3 class="subsection">b. QPSK: 두 배의 효율</h3>
+
+<p>QPSK(Quadrature PSK)는 위상 상태를 4개로 늘려 한 번의 전송으로 2 bit를 담는다.</p>
+
+$$s_\text{QPSK}(t) = A_c \cos\!\left(2\pi f_c t + \frac{(2n+1)\pi}{4}\right),\quad n \in \{0,1,2,3\}$$
+
+<div class="theorem box">
+  <div class="box-label">핵심 사실 — BPSK vs QPSK의 BER</div>
+  신호의 전송 전력을 비트 수로 나눈 "비트당 에너지" $E_b$를 동일하게 비교하면, BPSK와 QPSK의 비트 오류율(BER)은 수학적으로 거의 동일하다.
+  $$P_b^\text{BPSK} = Q\!\left(\sqrt{\tfrac{2E_b}{N_0}}\right) \approx P_b^\text{QPSK}$$
+  QPSK에서 각 심볼의 에너지는 $E_s = 2E_b$로, 2 bit를 담기 위해 에너지도 두 배다. QPSK의 진정한 이점은 <strong>같은 대역폭에서 2배의 데이터를 전송</strong>하는 스펙트럼 효율의 향상이지, 잡음 내성의 향상이 아니다.
+</div>
+
+<!-- ===== 3 ===== -->
+<h2 class="section-title" id="sec3">QAM: 진폭과 위상을 함께 제어하다</h2>
+
+<h3 class="subsection">a. 성좌도를 2차원 격자로</h3>
+
+<p>위상뿐 아니라 진폭까지 변화시키면 성좌도 위에 점을 2차원 격자 형태로 훨씬 많이 배치할 수 있다. 이것이 <strong>QAM(Quadrature Amplitude Modulation)</strong>의 핵심 아이디어다. 16-QAM은 $4\times4$ 격자 16개 점으로 $\log_2 16 = 4\,\text{bits/symbol}$을, 256-QAM은 $16\times16$ 격자 256개 점으로 $8\,\text{bits/symbol}$을 담는다.</p>
+
+<h3 class="subsection">b. 삼각함수 덧셈정리가 드러내는 I/Q 분해</h3>
+
+<p>임의의 진폭과 위상을 가진 반송파 $s(t) = A(t)\cos(2\pi f_c t + \theta(t))$에 덧셈정리를 적용하면,</p>
+
+$$s(t) = \underbrace{A(t)\cos\theta(t)}_{I(t)} \cdot \cos(2\pi f_c t) \;-\; \underbrace{A(t)\sin\theta(t)}_{Q(t)} \cdot \sin(2\pi f_c t)$$
+
+<div class="definition box">
+  <div class="box-label">Definition — I/Q 분해</div>
+  $$\boxed{s(t) = I(t)\cos(2\pi f_c t) - Q(t)\sin(2\pi f_c t)}$$
+  어떤 복잡한 QAM 신호도 결국 주파수 $f_c$의 <strong>코사인 파동</strong> 하나와 같은 주파수의 <strong>사인 파동</strong> 하나, 단 두 성분의 합으로 표현된다. $I(t)$와 $Q(t)$는 각각 성좌도의 가로축과 세로축 좌표다.
+</div>
+
+<h3 class="subsection">c. 직교성: 분리가 가능한 물리적 이유</h3>
+
+<p>수신기는 합성 신호에서 $I(t)$와 $Q(t)$를 코사인과 사인이 <strong>직교(orthogonal)</strong>하다는 성질로 분리한다.</p>
+
+$$\frac{1}{T}\int_0^T \cos(2\pi f_c t)\cdot\sin(2\pi f_c t)\,dt = \frac{1}{T}\int_0^T \frac{1}{2}\sin(4\pi f_c t)\,dt = 0$$
+
+<p>수신 신호 $s(t)$에 $\cos(2\pi f_c t)$를 곱하고 한 심볼 주기 동안 적분하면,</p>
+
+$$\int_0^T s(t)\cos(2\pi f_c t)\,dt = I(t)\underbrace{\int_0^T\cos^2(\cdot)\,dt}_{T/2} - Q(t)\underbrace{\int_0^T\cos(\cdot)\sin(\cdot)\,dt}_{0} = \frac{T}{2}I$$
+
+<p>$Q$ 성분은 완벽히 소멸하고 $I$만 남는다. 이 과정이 <strong>코히런트 복조(coherent demodulation)</strong>이며, 코사인과 사인이 서로 독립된 두 개의 정보 통로 역할을 한다.</p>
+
+<h3 class="subsection">d. 고차 QAM의 트레이드오프</h3>
+
+<p>평균 심볼 에너지 $E_s$를 고정했을 때, $M$-QAM에서 최소 점 간 거리는 대략</p>
+
+$$d_\text{min} \propto \sqrt{\frac{E_s}{M-1}}$$
+
+<p>$M$이 4에서 256으로 64배 커지면 $d_\text{min}$은 약 9배 좁아진다. 동일한 잡음 환경에서 256-QAM이 64-QAM보다 오류 확률이 극적으로 높아진다는 의미다.</p>
+
+<table>
+  <thead>
+    <tr><th>변조 방식</th><th>bits/symbol</th><th>필요 SNR (대략)</th><th>주요 적용 환경</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>QPSK</td><td>2</td><td>~6 dB</td><td>원거리 링크, 위성 통신</td></tr>
+    <tr><td>16-QAM</td><td>4</td><td>~12 dB</td><td>LTE 중간 거리</td></tr>
+    <tr><td>64-QAM</td><td>6</td><td>~18 dB</td><td>LTE, Wi-Fi 표준 환경</td></tr>
+    <tr><td>256-QAM</td><td>8</td><td>~24 dB</td><td>근거리 Wi-Fi, LTE-A</td></tr>
+    <tr><td>1024-QAM</td><td>10</td><td>~30 dB</td><td>5G 밀집 환경 (실내)</td></tr>
+  </tbody>
+</table>
+<div class="tbl-caption">표 1. QAM 변조 방식별 스펙트럼 효율 및 요구 SNR.</div>
+
+<!-- ===== 4 ===== -->
+<h2 class="section-title" id="sec4">현실 채널의 물리적 왜곡</h2>
+
+<h3 class="subsection" id="sec4-1">a. 열잡음: 볼츠만 상수가 부과하는 한계</h3>
+
+<p>통신 성능에는 물리 법칙이 부과하는 절대적 한계가 있다. 도체 내부 전자들의 열적 요동에서 비롯되는 <strong>열잡음(thermal noise)</strong>이다. 통계역학의 에너지 등분배 정리에 따르면 열평형 상태에서 각 자유도는 $k_BT/2$의 평균 에너지를 가진다. 1928년 존슨이 측정하고 나이퀴스트가 이론적으로 유도한 열잡음 전력은,</p>
+
+<div class="theorem box">
+  <div class="box-label">Johnson–Nyquist Noise</div>
+  $$N = k_B T B$$
+  <ul style="padding-left:22px; line-height:2; margin-top:8px;">
+    <li>$k_B = 1.38 \times 10^{-23}\,\text{J/K}$ — 볼츠만 상수</li>
+    <li>$T$ — 절대 온도 [K]</li>
+    <li>$B$ — 대역폭 [Hz]</li>
+  </ul>
+</div>
+
+<p>실온($T \approx 290\,\text{K}$)에서 열잡음 전력 밀도를 계산하면,</p>
+
+$$\frac{N}{B} = k_B T \approx 4.0\times10^{-21}\,\text{W/Hz} = -174\,\text{dBm/Hz}$$
+
+<div class="highlight">
+  $-174\,\text{dBm/Hz}$가 모든 무선 수신기의 감도 하한(noise floor)이다. 이 값 이하의 신호는 어떤 기술로도 탐지할 수 없다.
+</div>
+
+<h3 class="subsection" id="sec4-2">b. 다중 경로 페이딩: 파동 간섭이 통신을 파괴하는 방식</h3>
+
+<p>도시 환경에서 전자기파는 건물, 차량, 지면에 의해 반사·굴절·회절되어 수신기에 여러 경로로 동시에 도달한다. 두 경로의 파동은 경로 길이 차이 $\Delta d$에 따라 위상이 어긋나 있다.</p>
+
+$$\Delta\phi = \frac{2\pi}{\lambda}\cdot\Delta d$$
+
+<p>이 위상 차이가 $\Delta\phi = \pi$ (즉 $\Delta d = \lambda/2$)이면 두 파동은 <strong>완전 상쇄 간섭</strong>을 일으킨다. 2.4 GHz Wi-Fi의 경우 $\lambda \approx 12.5\,\text{cm}$이므로, $\lambda/2 = 6.25\,\text{cm}$만큼 위치를 바꿔도 신호가 보강 간섭에서 상쇄 간섭으로 바뀔 수 있다. 이것이 스마트폰을 들고 걸을 때 수신 강도가 지속적으로 변동하는 이유이며, 이를 <strong>레일리 페이딩(Rayleigh fading)</strong>이라 한다.</p>
+
+<h3 class="subsection" id="sec4-3">c. 부호 간 간섭(ISI): 전력을 높여도 해결 안 되는 문제</h3>
+
+<p>다중 경로의 더 치명적인 효과는 시간 영역에서 나타난다. 여러 경로의 신호들 사이에는 도달 시간의 차이, 즉 <strong>지연 시간(delay spread)</strong> $\Delta t = \Delta d / c$가 존재한다. 이 지연이 한 심볼의 지속 시간 $T_s$에 가까워지면 현재 심볼을 직접 경로로 수신하는 동시에 이전 심볼이 우회 경로를 통해 늦게 도착한다. 이것이 <strong>부호 간 간섭(ISI)</strong>이다.</p>
+
+$$\text{ISI 발생 조건:}\quad \Delta t_\text{max} \gtrsim T_s$$
+
+<div class="theorem box">
+  <div class="box-label">ISI는 전력 증가로 극복 불가</div>
+  열잡음은 송신 전력을 높이면 SNR이 개선되어 어느 정도 극복할 수 있다. 그러나 ISI는 그렇지 않다. 신호 전력을 높이면 간섭을 일으키는 이전 심볼의 복사본 전력도 함께 높아지기 때문에, 전력 증가로는 ISI를 제거할 수 없다.
+</div>
+
+<!-- ===== 5 ===== -->
+<h2 class="section-title" id="sec5">섀넌–하틀리 정리</h2>
+
+<h3 class="subsection">a. 채널 용량이라는 개념의 탄생</h3>
+
+<p>1948년, 클로드 섀넌은 아무리 영리한 변조와 코딩을 써도 넘을 수 없는 한계가 있는지를 탐구했다. 그리고 그 한계를 명확한 수식으로 표현했다.</p>
+
+<div class="theorem box">
+  <div class="box-label">Shannon–Hartley Theorem</div>
+  $$\boxed{C = B\log_2\!\left(1 + \frac{S}{N}\right) \quad \text{[bps]}}$$
+  <ul style="padding-left:22px; line-height:2; margin-top:8px;">
+    <li>$C$ — 채널 용량: 오류 없이 전송 가능한 이론적 최대 정보량 [bps]</li>
+    <li>$B$ — 대역폭 [Hz]</li>
+    <li>$S/N$ — 신호 대 잡음비 (SNR)</li>
+  </ul>
+</div>
+
+<p>섀넌은 이것이 어떤 변조나 코딩 기술을 써도 넘을 수 없는 <strong>물리적 한계</strong>임을 증명했다. SNR이 3 dB(두 배) 증가할 때마다 채널 용량이 $B\,\text{bps}$씩 선형으로 증가한다. 이것이 LTE와 5G가 더 넓은 대역폭 확보에 집중하는 이유다.</p>
+
+<h3 class="subsection">b. AMC: 물리 상태를 읽고 한계에 근접하는 전략</h3>
+
+<p>실제 통신 시스템은 이 한계에 최대한 접근하기 위해 <strong>적응형 변조 및 코딩(AMC)</strong>을 사용한다. 단말기는 SNR을 지속적으로 측정하고 그 정보를 기지국에 피드백한다. 기지국은 현재 채널 상태에서 섀넌 한계에 가장 가깝게 운용할 수 있는 변조 방식과 오류 정정 코드의 강도를 선택한다.</p>
+
+<div class="remark box">
+  <div class="box-label">AMC 원리</div>
+  SNR 높음 → 256-QAM + 약한 오류정정<br>
+  SNR 낮음 → QPSK + 강한 오류정정<br><br>
+  지하철이나 건물 내에서 통신 속도가 떨어지는 것은 기기가 고장난 것이 아니다. SNR이 낮아진 채널 상태에 맞게 AMC가 낮은 차수의 변조를 선택해 신뢰성을 우선하기 때문이다.
+</div>
+
+<!-- ===== 6 ===== -->
+<h2 class="section-title" id="sec6">OFDM: ISI를 물리학으로 해결하다</h2>
+
+<h3 class="subsection">a. 근본적 전략: 좁은 채널 여러 개로 쪼개기</h3>
+
+<p>ISI는 심볼 주기 $T_s$가 다중 경로 지연 시간 $\Delta t$보다 짧을 때 발생한다. 이 문제를 해결하는 가장 직접적인 방법은 심볼 주기를 충분히 길게 만드는 것이다. <strong>OFDM(Orthogonal Frequency Division Multiplexing)</strong>은 총 전송 대역폭 $W$를 $N$개의 좁은 부반송파로 분할하여 각 부반송파에서의 심볼 주기를 $N$배 길게 만든다.</p>
+
+$$T_s \;\longrightarrow\; NT_s$$
+
+<p>LTE는 약 1200개의 부반송파를 사용하므로 단일 반송파 방식보다 심볼 주기가 약 1200배 길어진다. 이것이 수백 ns의 도심 지연 시간도 충분히 허용할 수 있는 이유다.</p>
+
+<h3 class="subsection">b. 직교성: 수많은 부반송파가 서로 방해하지 않는 이유</h3>
+
+<p>부반송파 간격을 $\Delta f = 1/T$로 정확히 설정하면 임의의 두 부반송파 $f_m$과 $f_n$에 대해 한 심볼 주기 동안 내적을 계산하면,</p>
+
+$$\frac{1}{T}\int_0^T e^{j2\pi f_m t}\cdot e^{-j2\pi f_n t}\,dt = \begin{cases}1, & m = n \\ 0, & m \neq n\end{cases}$$
+
+<div class="remark box">
+  <div class="box-label">FDM과의 본질적 차이</div>
+  스펙트럼 위에서 부반송파들은 서로 겹쳐 있다. 그러나 수신기에서 특정 부반송파 주파수에 맞춰 적분을 수행하면 다른 모든 부반송파의 기여가 정확히 0이 된다. 기존 FDM은 부반송파 사이에 빈 보호 대역을 둬서 물리적으로 분리했지만, OFDM은 수학적 직교성으로 분리하므로 스펙트럼을 훨씬 효율적으로 사용한다.
+</div>
+
+<h3 class="subsection">c. 순환 전치(Cyclic Prefix)</h3>
+
+<p>실제 다중 경로 채널을 통과하면 직교성이 깨진다. 이 문제를 해결하는 아이디어가 <strong>순환 전치(Cyclic Prefix, CP)</strong>다. 각 OFDM 심볼을 송신하기 직전에, 심볼의 끝부분 일부를 복사해 앞에 붙인다.</p>
+
+<div class="definition box">
+  <div class="box-label">Cyclic Prefix의 수학적 효과</div>
+  CP 길이를 $T_\text{CP} \geq \Delta t_\text{max}$로 설정하면 이전 심볼의 모든 다중 경로 성분이 CP 구간 내에 도착을 완료한다. 수신기는 CP 구간을 버리고 심볼 본체만 처리하므로 ISI가 완전히 제거된다. 더 중요한 효과는 채널이 <strong>순환 합성곱</strong>으로 표현되어 각 부반송파 복원이 단순한 복소 나눗셈 한 번으로 완료된다는 점이다.
+  $$Y_k = H(f_k)\cdot X_k + W_k \;\implies\; \hat{X}_k = \frac{Y_k}{H(f_k)}$$
+</div>
+
+<p>LTE 표준에서 CP 길이는 일반 모드 $4.7\,\mu\text{s}$이다. 이는 빛이 약 1400 m를 이동하는 시간에 해당하므로, 이보다 짧은 경로 차이는 모두 CP로 처리 가능하다.</p>
+
+<h3 class="subsection">d. DFT와 FFT: 물리적 연산을 알고리즘이 만들어내는 방식</h3>
+
+<p>OFDM에서 $N$개의 부반송파 신호를 합성하거나 분리하는 것은 수학적으로 정확히 <strong>이산 푸리에 변환(DFT)</strong>에 해당한다.</p>
+
+$$X_k = \sum_{n=0}^{N-1} x_n\, e^{-j\frac{2\pi}{N}kn}$$
+
+<p>이 식을 정의 그대로 계산하면 전체 연산량은 $O(N^2)$이다. $N = 1024$인 경우 초당 수천 번의 OFDM 심볼을 처리하려면 모바일 기기의 배터리는 순식간에 소진된다. 이 문제를 해결한 것이 <strong>Cooley-Tukey 고속 푸리에 변환(FFT)</strong> 알고리즘이다. $N$이 2의 거듭제곱일 때, 짝수 및 홀수 인덱스 성분의 DFT를 분리하면,</p>
+
+$$X_k = \underbrace{\sum_{n=0}^{N/2-1}x_{2n}\,e^{-j\frac{2\pi}{N/2}kn}}_{E_k} + \,e^{-j\frac{2\pi}{N}k}\underbrace{\sum_{n=0}^{N/2-1}x_{2n+1}\,e^{-j\frac{2\pi}{N/2}kn}}_{O_k}$$
+
+<p>크기 $N$의 DFT = 크기 $N/2$의 DFT 두 개 + $N$번의 합산. 이 분해를 재귀적으로 반복하면 최종 연산량이 $O(N^2)$에서 $O(N\log_2 N)$으로 줄어든다.</p>
+
+<table>
+  <thead>
+    <tr><th>알고리즘</th><th>$N=1024$일 때 연산량</th><th>비율</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>직접 DFT ($N^2$)</td><td>1,048,576</td><td>≈102×</td></tr>
+    <tr><td>FFT ($N\log_2 N$)</td><td>10,240</td><td>1× (기준)</td></tr>
+  </tbody>
+</table>
+<div class="tbl-caption">표 2. DFT vs FFT 연산량 비교. 현대 Wi-Fi(802.11ax)는 $N \geq 2048$의 FFT를 사용하여 직접 DFT 대비 약 186배 이상의 연산량을 절감한다.</div>
+
+<!-- ===== 7 ===== -->
+<h2 class="section-title" id="sec7">물리에서 알고리즘까지</h2>
+
+<p>이 보고서에서 다룬 주제들은 따로따로 존재하는 기술적 선택이 아니다. 각각은 앞의 물리적 제약에서 필연적으로 요구되는 응답이다.</p>
+
+<table>
+  <thead>
+    <tr><th>물리 현상 / 제약</th><th>→</th><th>기술적 응답</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>맥스웰 방정식 → 전자기파 존재</td><td>→</td><td>무선 통신 자체의 가능성 열림</td></tr>
+    <tr><td>안테나 공명 조건 $\lambda/4$</td><td>→</td><td>GHz 대역 반송파 선택</td></tr>
+    <tr><td>코사인·사인의 수학적 직교성</td><td>→</td><td>I/Q 복조, QAM 구현 원리</td></tr>
+    <tr><td>볼츠만 통계 → 열잡음 $N = k_BT B$</td><td>→</td><td>수신기 감도 하한, 변조 차수 제한</td></tr>
+    <tr><td>섀넌 정리 → 정보 상한</td><td>→</td><td>적응형 변조 및 코딩 (AMC)</td></tr>
+    <tr><td>다중 경로 → 위상 차이 → 페이딩</td><td>→</td><td>OFDM: 좁은 부반송파로 분할</td></tr>
+    <tr><td>ISI: 심볼 주기와 경로 지연의 충돌</td><td>→</td><td>순환 전치 (Cyclic Prefix)</td></tr>
+    <tr><td>실시간 연산 전력·면적 한계</td><td>→</td><td>FFT: $O(N^2) \to O(N\log_2 N)$</td></tr>
+  </tbody>
+</table>
+
+<div class="highlight">
+  물리학과 정보 이론과 컴퓨터 과학의 경계는 명확하지 않다. 물리적 제약이 알고리즘 설계의 동기가 되고, 알고리즘의 성취가 새로운 물리적 가능성을 여는 방식으로, 이 세 영역은 서로를 필요로 하며 현대 통신 기술이라는 하나의 통합된 체계를 이루고 있다.
+</div>
+
+</div><!-- /content -->
+</body>
+</html>
