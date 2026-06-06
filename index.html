@@ -4,241 +4,405 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>보고서 라이브러리</title>
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg: #ffffff;
-    --bg-2: #f7f7f5;
-    --bg-3: #f0efec;
-    --text: #1a1a1a;
-    --text-2: #6b6b6b;
-    --text-3: #a0a0a0;
-    --border: rgba(0,0,0,0.08);
-    --border-2: rgba(0,0,0,0.14);
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 14px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-    --font: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-    --font-serif: 'Noto Serif KR', Georgia, serif;
-  }
+:root {
+  /* DESIGN.md colors */
+  --ink:            #171717;
+  --body:           #4d4d4d;
+  --mute:           #888888;
+  --hairline:       #ebebeb;
+  --hairline-strong:#a1a1a1;
+  --canvas:         #ffffff;
+  --canvas-soft:    #fafafa;
+  --canvas-soft-2:  #f5f5f5;
+  --link:           #0070f3;
+  --error:          #ee0000;
+  --warning:        #f5a623;
+  --violet:         #7928ca;
+  --cyan:           #50e3c2;
+  --cyan-deep:      #29bc9b;
+  --highlight-pink: #ff0080;
 
-  body {
-    font-family: var(--font);
-    background: var(--bg-3);
-    color: var(--text);
-    min-height: 100vh;
-    font-size: 14px;
-    line-height: 1.6;
-  }
+  /* gradient pairs */
+  --grad-dev-s:  #007cf0; --grad-dev-e:  #00dfd8;
+  --grad-prev-s: #7928ca; --grad-prev-e: #ff0080;
+  --grad-ship-s: #ff4d4d; --grad-ship-e: #f9cb28;
 
-  /* ── topbar ── */
-  .topbar {
-    position: sticky; top: 0; z-index: 100;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    height: 54px;
-    display: flex; align-items: center;
-    padding: 0 1.5rem; gap: 1.25rem;
-  }
-  .logo {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 14px; font-weight: 600; letter-spacing: -0.3px;
-    flex-shrink: 0; text-decoration: none; color: var(--text);
-  }
-  .logo-icon {
-    width: 28px; height: 28px; border-radius: 8px;
-    background: var(--text); display: flex; align-items: center; justify-content: center;
-  }
-  .logo-icon svg { width: 16px; height: 16px; fill: none; stroke: white; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  /* spacing */
+  --sp-xxs: 4px;  --sp-xs: 8px;  --sp-sm: 12px; --sp-md: 16px;
+  --sp-lg: 24px;  --sp-xl: 32px; --sp-2xl: 40px;
 
-  .search-wrap { flex: 1; max-width: 340px; position: relative; }
-  .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; stroke: var(--text-3); fill: none; stroke-width: 2; stroke-linecap: round; }
-  .search-wrap input {
-    width: 100%; padding: 7px 12px 7px 32px;
-    border: 1px solid var(--border-2); border-radius: var(--radius-sm);
-    background: var(--bg-2); font-size: 13px; color: var(--text);
-    outline: none; font-family: var(--font); transition: border-color 0.15s, background 0.15s;
-  }
-  .search-wrap input:focus { border-color: rgba(0,0,0,0.3); background: var(--bg); }
-  .search-wrap input::placeholder { color: var(--text-3); }
+  /* rounded */
+  --r-xs: 4px; --r-sm: 6px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px;
+  --r-pill-sm: 64px; --r-pill: 100px;
 
-  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-  .view-toggle { display: flex; border: 1px solid var(--border-2); border-radius: var(--radius-sm); overflow: hidden; }
-  .view-btn {
-    padding: 5px 8px; background: transparent; border: none; cursor: pointer;
-    color: var(--text-3); display: flex; align-items: center; transition: all 0.1s;
-  }
-  .view-btn:hover { color: var(--text-2); background: var(--bg-2); }
-  .view-btn.active { background: var(--text); color: white; }
-  .view-btn svg { width: 15px; height: 15px; fill: currentColor; }
+  /* shadows — stacked small offsets per DESIGN.md */
+  --shadow-1: 0 0 0 1px rgba(0,0,0,0.06),
+              0 1px 2px rgba(0,0,0,0.04);
+  --shadow-2: 0 0 0 1px rgba(0,0,0,0.06),
+              0 1px 2px rgba(0,0,0,0.04),
+              0 2px 6px rgba(0,0,0,0.04);
+  --shadow-3: 0 0 0 1px rgba(0,0,0,0.06),
+              0 1px 3px rgba(0,0,0,0.06),
+              0 4px 12px rgba(0,0,0,0.06);
+  --shadow-4: 0 0 0 1px rgba(0,0,0,0.06),
+              0 2px 4px rgba(0,0,0,0.06),
+              0 8px 24px rgba(0,0,0,0.08);
 
-  .sort-select {
-    padding: 6px 10px; border: 1px solid var(--border-2); border-radius: var(--radius-sm);
-    background: var(--bg); font-size: 13px; color: var(--text); cursor: pointer;
-    font-family: var(--font); outline: none;
-  }
+  --font:      'Geist', 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
 
-  /* ── layout ── */
-  .layout { display: flex; min-height: calc(100vh - 54px); }
+::selection { background: var(--ink); color: #f2f2f2; }
 
-  /* ── sidebar ── */
-  .sidebar {
-    width: 196px; flex-shrink: 0;
-    background: var(--bg);
-    border-right: 1px solid var(--border);
-    padding: 1.25rem 0;
-    position: sticky; top: 54px; height: calc(100vh - 54px); overflow-y: auto;
-  }
-  .sidebar-section { margin-bottom: 1.75rem; }
-  .sidebar-label {
-    font-size: 10.5px; font-weight: 600; letter-spacing: 0.6px;
-    text-transform: uppercase; color: var(--text-3);
-    padding: 0 1.25rem; margin-bottom: 4px;
-  }
-  .sidebar-item {
-    display: flex; align-items: center; gap: 8px;
-    padding: 6px 1.25rem; font-size: 13px; cursor: pointer;
-    color: var(--text-2); border-left: 2px solid transparent;
-    transition: all 0.12s; user-select: none;
-  }
-  .sidebar-item:hover { color: var(--text); background: var(--bg-2); }
-  .sidebar-item.active { color: var(--text); background: var(--bg-2); border-left-color: var(--text); font-weight: 500; }
-  .sidebar-item svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-  .sidebar-count {
-    margin-left: auto; font-size: 11px; background: var(--bg-3);
-    color: var(--text-3); padding: 1px 7px; border-radius: 20px;
-  }
+body {
+  font-family: var(--font);
+  background: var(--canvas);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.28px;
+  -webkit-font-smoothing: antialiased;
+}
 
-  .tags-wrap { padding: 0 1.25rem; display: flex; flex-wrap: wrap; gap: 5px; }
-  .tag-chip {
-    font-size: 11.5px; padding: 3px 9px; border-radius: 20px;
-    border: 1px solid var(--border-2); color: var(--text-2); background: transparent;
-    cursor: pointer; transition: all 0.12s; user-select: none;
-  }
-  .tag-chip:hover { border-color: rgba(0,0,0,0.25); color: var(--text); }
-  .tag-chip.active { background: var(--text); color: white; border-color: transparent; }
+/* ── topbar ── nav-bar spec: canvas bg, 64px height, padding sm lg ── */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--hairline);
+  height: 64px;
+  display: flex; align-items: center;
+  padding: 0 var(--sp-lg);
+  gap: var(--sp-sm);
+}
 
-  /* ── main ── */
-  .main { flex: 1; padding: 1.5rem 1.75rem; min-width: 0; }
+.logo {
+  display: flex; align-items: center; gap: var(--sp-xs);
+  font-size: 14px; font-weight: 500; letter-spacing: -0.28px;
+  color: var(--ink); text-decoration: none; flex-shrink: 0;
+}
+.logo-icon {
+  width: 28px; height: 28px; border-radius: var(--r-sm);
+  border: 1px solid var(--hairline); background: var(--canvas-soft);
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.logo-icon img  { width: 18px; height: 18px; object-fit: contain; }
+.logo-icon .fallback-svg { width: 14px; height: 14px; stroke: var(--body); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-  .toolbar {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 1.125rem;
-  }
-  .count-text { font-size: 13px; color: var(--text-2); }
+/* nav-link spec: color body, body-sm, pill radius */
+.topbar-nav { display: flex; align-items: center; gap: 2px; margin: 0 var(--sp-sm); }
+.nav-link {
+  font-size: 14px; font-weight: 400; letter-spacing: -0.28px;
+  color: var(--body); padding: var(--sp-xs) var(--sp-sm);
+  border-radius: var(--r-pill); text-decoration: none;
+  transition: color 0.12s, background 0.12s;
+}
+.nav-link:hover { color: var(--ink); background: var(--canvas-soft-2); }
 
-  /* ── grid ── */
-  .grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: var(--sp-xs); }
 
-  .report-card {
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); padding: 1rem 1.125rem;
-    cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
-    text-decoration: none; color: inherit; display: block;
-  }
-  .report-card:hover { border-color: var(--border-2); box-shadow: var(--shadow); }
+/* search — form-input-sm spec: canvas bg, hairline border, 32px height, r-sm */
+.search-wrap { position: relative; }
+.search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 13px; height: 13px; stroke: var(--mute); fill: none; stroke-width: 2; stroke-linecap: round; pointer-events: none; }
+.search-wrap input {
+  width: 240px; height: 32px; padding: 0 var(--sp-sm) 0 30px;
+  background: var(--canvas); border: 1px solid var(--hairline);
+  border-radius: var(--r-sm); font-size: 14px; letter-spacing: -0.28px;
+  color: var(--ink); font-family: var(--font); outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.search-wrap input:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(0,0,0,0.08); }
+.search-wrap input::placeholder { color: var(--mute); }
 
-  .card-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
-  .card-icon {
-    width: 34px; height: 34px; border-radius: var(--radius-sm);
-    background: var(--bg-2); display: flex; align-items: center;
-    justify-content: center; flex-shrink: 0;
-  }
-  .card-icon svg { width: 16px; height: 16px; stroke: var(--text-2); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .card-star { margin-left: auto; color: #d4a017; font-size: 14px; }
+/* sort — form-input-sm style */
+.sort-select {
+  height: 32px; padding: 0 var(--sp-sm);
+  background: var(--canvas); border: 1px solid var(--hairline);
+  border-radius: var(--r-sm); font-size: 14px; letter-spacing: -0.28px;
+  color: var(--body); font-family: var(--font); outline: none; cursor: pointer;
+  transition: border-color 0.12s;
+}
+.sort-select:hover { border-color: var(--hairline-strong); }
 
-  .card-title { font-size: 13.5px; font-weight: 500; line-height: 1.45; margin-bottom: 6px; }
-  .card-desc { font-size: 12px; color: var(--text-2); line-height: 1.5; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+/* view toggle */
+.view-toggle { display: flex; border: 1px solid var(--hairline); border-radius: var(--r-sm); overflow: hidden; }
+.view-btn {
+  height: 32px; padding: 0 9px; background: transparent; border: none;
+  cursor: pointer; color: var(--mute); display: flex; align-items: center;
+  transition: all 0.12s;
+}
+.view-btn:hover  { color: var(--body); background: var(--canvas-soft); }
+.view-btn.active { background: var(--ink); color: #fff; }
+.view-btn svg { width: 13px; height: 13px; fill: currentColor; }
 
-  .card-footer { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .cat-badge {
-    font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500;
-  }
-  .card-date { font-size: 11px; color: var(--text-3); margin-left: auto; }
+/* ── layout ── */
+.layout { display: flex; min-height: calc(100vh - 64px); }
 
-  .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-  .card-tag {
-    font-size: 11px; padding: 2px 7px; border-radius: 20px;
-    border: 1px solid var(--border); color: var(--text-3);
-  }
+/* ── sidebar ── ex-app-shell-row pattern, canvas-soft bg ── */
+.sidebar {
+  width: 200px; flex-shrink: 0;
+  background: var(--canvas-soft);
+  border-right: 1px solid var(--hairline);
+  display: flex; flex-direction: column;
+  position: sticky; top: 64px; height: calc(100vh - 64px);
+}
+.sidebar-scroll { flex: 1; overflow-y: auto; padding: var(--sp-lg) 0 var(--sp-md); }
 
-  /* ── list view ── */
-  .list-view { display: flex; flex-direction: column; gap: 6px; }
-  .report-row {
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: var(--radius-md); padding: 0.875rem 1.125rem;
-    display: flex; align-items: center; gap: 12px; cursor: pointer;
-    transition: border-color 0.15s; text-decoration: none; color: inherit;
-  }
-  .report-row:hover { border-color: var(--border-2); }
-  .row-icon {
-    width: 30px; height: 30px; border-radius: var(--radius-sm);
-    background: var(--bg-2); display: flex; align-items: center;
-    justify-content: center; flex-shrink: 0;
-  }
-  .row-icon svg { width: 14px; height: 14px; stroke: var(--text-2); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .row-title { font-size: 13.5px; font-weight: 500; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .row-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-  .row-tags { display: flex; gap: 4px; }
+.sidebar-label {
+  font-family: var(--font-mono); font-size: 12px; font-weight: 400;
+  line-height: 16px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--mute); padding: 0 var(--sp-md); margin-bottom: var(--sp-xxs);
+}
+.sidebar-section { margin-bottom: var(--sp-lg); }
 
-  /* ── category colors ── */
-  .cat-obs    { background: #EBF3FD; color: #1a5fa6; }
-  .cat-anal   { background: #EDFAF0; color: #1a7a3a; }
-  .cat-exp    { background: #FEF4E8; color: #a05a0a; }
-  .cat-tech   { background: #F0EDFE; color: #5040b0; }
-  .cat-other  { background: var(--bg-3); color: var(--text-2); }
+/* ex-app-shell-row: active indicator = brand primary */
+.sidebar-item {
+  display: flex; align-items: center; gap: var(--sp-xs);
+  padding: 6px var(--sp-md); font-size: 14px; font-weight: 400;
+  letter-spacing: -0.28px; cursor: pointer; color: var(--body);
+  border-left: 2px solid transparent; transition: all 0.1s;
+  user-select: none;
+}
+.sidebar-item:hover { color: var(--ink); background: var(--canvas-soft-2); }
+.sidebar-item.active { color: var(--ink); background: var(--canvas); border-left-color: var(--ink); font-weight: 500; }
+.sidebar-item svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.sidebar-count {
+  margin-left: auto; font-family: var(--font-mono); font-size: 12px;
+  color: var(--mute); background: var(--canvas-soft-2);
+  padding: 0 6px; border-radius: var(--r-pill); min-width: 20px; text-align: center;
+}
 
-  /* ── modal overlay ── */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-    z-index: 1000; display: none; align-items: center; justify-content: center;
-    backdrop-filter: blur(2px);
-  }
-  .modal-overlay.open { display: flex; }
+/* tags — multi-select */
+.tags-wrap { padding: 0 var(--sp-md); display: flex; flex-wrap: wrap; gap: 5px; }
+.tag-chip {
+  font-size: 12px; padding: 2px 9px; border-radius: var(--r-pill);
+  border: 1px solid var(--hairline); color: var(--body); background: var(--canvas);
+  cursor: pointer; transition: all 0.12s; user-select: none; line-height: 18px;
+}
+.tag-chip:hover  { border-color: var(--hairline-strong); color: var(--ink); }
+.tag-chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
 
-  /* ── viewer ── */
-  .viewer-box {
-    background: var(--bg); border-radius: var(--radius-lg);
-    border: 1px solid var(--border); width: 900px; max-width: 95vw;
-    height: 88vh; display: flex; flex-direction: column; overflow: hidden;
-  }
-  .viewer-header {
-    display: flex; align-items: center; gap: 10px;
-    padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
-  }
-  .viewer-title { font-size: 14px; font-weight: 500; flex: 1; }
-  .viewer-meta { font-size: 12px; color: var(--text-3); }
-  .viewer-close {
-    width: 28px; height: 28px; border: none; background: none; cursor: pointer;
-    border-radius: var(--radius-sm); color: var(--text-2); display: flex;
-    align-items: center; justify-content: center; transition: background 0.1s;
-  }
-  .viewer-close:hover { background: var(--bg-2); }
-  .viewer-close svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
-  .viewer-frame { flex: 1; width: 100%; border: none; }
+.active-tags-bar {
+  padding: 0 var(--sp-md); margin-bottom: var(--sp-xs);
+  display: none; align-items: center; gap: 6px;
+}
+.active-tags-bar.visible { display: flex; }
+.active-tags-bar-label { font-size: 12px; color: var(--mute); font-family: var(--font-mono); }
+.clear-tags {
+  font-size: 12px; color: var(--mute); background: none; border: none;
+  cursor: pointer; padding: 2px 7px; border-radius: var(--r-sm);
+  transition: all 0.1s; margin-left: auto;
+}
+.clear-tags:hover { color: var(--ink); background: var(--canvas-soft-2); }
 
-  /* ── empty state ── */
-  .empty { text-align: center; padding: 5rem 0; color: var(--text-3); }
-  .empty svg { width: 40px; height: 40px; stroke: currentColor; fill: none; stroke-width: 1.5; margin: 0 auto 12px; display: block; }
-  .empty p { font-size: 14px; }
+/* credit — bottom of sidebar */
+.sidebar-credit {
+  padding: var(--sp-md);
+  border-top: 1px solid var(--hairline);
+  flex-shrink: 0;
+}
+.credit-link {
+  display: flex; align-items: center; gap: var(--sp-xs);
+  text-decoration: none; color: var(--mute); font-size: 12px;
+  font-family: var(--font-mono); transition: color 0.15s;
+}
+.credit-link:hover { color: var(--ink); }
+.credit-link svg { width: 13px; height: 13px; fill: currentColor; flex-shrink: 0; }
 
-  /* ── README banner ── */
-  .readme {
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: var(--radius-md); padding: 1rem 1.25rem;
-    margin-bottom: 1.25rem; font-size: 13px; color: var(--text-2); line-height: 1.7;
-  }
-  .readme strong { color: var(--text); font-weight: 600; }
-  .readme code {
-    font-family: 'Menlo', 'Consolas', monospace; font-size: 12px;
-    background: var(--bg-3); padding: 1px 5px; border-radius: 4px; color: var(--text);
-  }
-  .readme details summary { cursor: pointer; color: var(--text); font-weight: 500; list-style: none; display: flex; align-items: center; gap: 6px; }
-  .readme details summary::before { content: '▶'; font-size: 9px; transition: transform 0.15s; }
-  .readme details[open] summary::before { transform: rotate(90deg); }
-  .readme details .content { margin-top: 0.75rem; }
+/* ── main ── */
+.main { flex: 1; padding: var(--sp-lg); min-width: 0; background: var(--canvas); }
+
+.toolbar { display: flex; align-items: center; gap: var(--sp-xs); margin-bottom: var(--sp-md); }
+.count-text { font-size: 12px; color: var(--mute); font-family: var(--font-mono); }
+
+/* how-to banner */
+.how-banner {
+  background: var(--canvas-soft); border: 1px solid var(--hairline);
+  border-radius: var(--r-md); padding: var(--sp-md);
+  margin-bottom: var(--sp-md); font-size: 14px; color: var(--body); line-height: 20px;
+  box-shadow: var(--shadow-1);
+}
+.how-banner details summary {
+  cursor: pointer; color: var(--body); font-weight: 500; list-style: none;
+  display: flex; align-items: center; gap: 6px;
+}
+.how-banner details summary::before { content: '▶'; font-size: 8px; color: var(--mute); transition: transform 0.15s; }
+.how-banner details[open] summary::before { transform: rotate(90deg); }
+.how-banner .how-content { margin-top: var(--sp-sm); }
+.how-banner code {
+  font-family: var(--font-mono); font-size: 13px; line-height: 20px;
+  background: var(--canvas-soft-2); padding: 1px 6px; border-radius: var(--r-xs);
+  color: var(--ink); border: 1px solid var(--hairline);
+}
+.how-banner pre {
+  background: var(--ink); color: #e4e4e4; padding: var(--sp-md);
+  border-radius: var(--r-md); margin-top: var(--sp-xs);
+  font-family: var(--font-mono); font-size: 13px; line-height: 20px;
+  overflow-x: auto;
+}
+
+/* ── cards — card-marketing spec ── */
+.grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--sp-sm); }
+
+.report-card {
+  background: var(--canvas); border: 1px solid var(--hairline);
+  border-radius: var(--r-md); padding: var(--sp-lg);
+  cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s;
+  display: block; text-decoration: none; color: inherit;
+  box-shadow: var(--shadow-1);
+}
+.report-card:hover { border-color: var(--hairline-strong); box-shadow: var(--shadow-3); }
+
+.card-top { display: flex; align-items: flex-start; gap: var(--sp-xs); margin-bottom: var(--sp-sm); }
+.card-icon {
+  width: 32px; height: 32px; border-radius: var(--r-xs);
+  border: 1px solid var(--hairline); background: var(--canvas-soft);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.card-icon svg { width: 15px; height: 15px; stroke: var(--body); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.card-star { margin-left: auto; font-size: 13px; color: var(--warning); }
+
+.card-title { font-size: 14px; font-weight: 500; line-height: 20px; letter-spacing: -0.28px; margin-bottom: 4px; color: var(--ink); }
+.card-desc  { font-size: 12px; color: var(--body); line-height: 18px; margin-bottom: var(--sp-sm); display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.card-footer { display: flex; align-items: center; gap: var(--sp-xs); flex-wrap: wrap; }
+.cat-badge  { font-size: 12px; padding: 2px var(--sp-xs); border-radius: var(--r-pill); font-weight: 500; }
+.type-badge { font-size: 11px; padding: 1px 6px; border-radius: var(--r-xs); font-family: var(--font-mono); font-weight: 500; letter-spacing: 0.3px; }
+.card-date  { font-size: 12px; color: var(--mute); font-family: var(--font-mono); }
+
+.card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: var(--sp-xs); }
+.card-tag  { font-size: 11px; padding: 2px 7px; border-radius: var(--r-pill); border: 1px solid var(--hairline); color: var(--mute); }
+
+/* ── list view ── */
+.list-view { display: flex; flex-direction: column; gap: 4px; }
+.report-row {
+  background: var(--canvas); border: 1px solid var(--hairline);
+  border-radius: var(--r-sm); padding: var(--sp-sm) var(--sp-md);
+  display: flex; align-items: center; gap: var(--sp-sm); cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s;
+  text-decoration: none; color: inherit; box-shadow: var(--shadow-1);
+}
+.report-row:hover { border-color: var(--hairline-strong); box-shadow: var(--shadow-2); }
+.row-icon {
+  width: 28px; height: 28px; border-radius: var(--r-xs);
+  border: 1px solid var(--hairline); background: var(--canvas-soft);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.row-icon svg { width: 13px; height: 13px; stroke: var(--body); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.row-title { font-size: 14px; font-weight: 500; letter-spacing: -0.28px; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row-right { display: flex; align-items: center; gap: var(--sp-xs); flex-shrink: 0; }
+
+/* ── type colors — gradient pairs from DESIGN.md ── */
+.type-html { background: linear-gradient(90deg, var(--grad-dev-s), var(--grad-dev-e)); color: #fff; }
+.type-pdf  { background: linear-gradient(90deg, var(--grad-prev-s), var(--grad-prev-e)); color: #fff; }
+.type-pptx { background: linear-gradient(90deg, var(--grad-ship-s), var(--grad-ship-e)); color: #fff; }
+
+/* ── category badge colors ── */
+.cat-explore { background: #f0e8fc; color: var(--violet); }
+.cat-obs     { background: #ddf4ff; color: #0761d1; }
+.cat-anal    { background: #d4f4e8; color: #16a34a; }
+.cat-exp     { background: #fff3d4; color: var(--warning); }
+.cat-tech    { background: #fce8f0; color: var(--highlight-pink); }
+.cat-other   { background: var(--canvas-soft-2); color: var(--body); }
+
+/* ── overlay / viewer ── ex-modal-card: canvas bg, elevated shadow ── */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  z-index: 1000; display: none; align-items: center; justify-content: center;
+}
+.overlay.open { display: flex; }
+
+.viewer-box {
+  background: var(--canvas); border: 1px solid var(--hairline);
+  border-radius: var(--r-xl); width: 920px; max-width: 94vw;
+  height: 88vh; display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: var(--shadow-4);
+}
+.viewer-header {
+  display: flex; align-items: center; gap: var(--sp-sm);
+  padding: var(--sp-sm) var(--sp-md); border-bottom: 1px solid var(--hairline);
+  flex-shrink: 0; background: var(--canvas-soft);
+}
+.viewer-icon {
+  width: 32px; height: 32px; border-radius: var(--r-xs);
+  border: 1px solid var(--hairline); background: var(--canvas);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.viewer-icon svg { width: 15px; height: 15px; stroke: var(--body); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.viewer-info { flex: 1; min-width: 0; }
+.viewer-title { font-size: 14px; font-weight: 500; letter-spacing: -0.28px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.viewer-meta  { font-size: 12px; color: var(--mute); font-family: var(--font-mono); margin-top: 1px; }
+.viewer-actions { display: flex; align-items: center; gap: var(--sp-xs); flex-shrink: 0; }
+
+/* nav-cta-login style download button */
+.dl-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 28px; padding: 0 var(--sp-xs);
+  background: var(--canvas); color: var(--ink);
+  border: 1px solid var(--hairline); border-radius: var(--r-sm);
+  font-size: 14px; font-weight: 500; font-family: var(--font);
+  text-decoration: none; cursor: pointer; transition: border-color 0.12s, box-shadow 0.12s;
+}
+.dl-btn:hover { border-color: var(--hairline-strong); box-shadow: var(--shadow-1); }
+.dl-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.viewer-close {
+  width: 28px; height: 28px; border: 1px solid transparent; background: none;
+  cursor: pointer; border-radius: var(--r-sm); color: var(--mute);
+  display: flex; align-items: center; justify-content: center; transition: all 0.1s;
+}
+.viewer-close:hover { background: var(--canvas-soft-2); border-color: var(--hairline); color: var(--ink); }
+.viewer-close svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+.viewer-body  { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.viewer-frame { flex: 1; width: 100%; border: none; }
+
+/* fallback */
+.viewer-fallback {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: var(--sp-md); padding: var(--sp-xl); text-align: center;
+}
+.fallback-icon {
+  width: 56px; height: 56px; border-radius: var(--r-lg);
+  border: 1px solid var(--hairline); background: var(--canvas-soft);
+  display: flex; align-items: center; justify-content: center; margin: 0 auto;
+}
+.fallback-icon svg { width: 24px; height: 24px; stroke: var(--body); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.fallback-title { font-size: 20px; font-weight: 600; letter-spacing: -0.6px; line-height: 28px; }
+.fallback-desc  { font-size: 14px; color: var(--body); max-width: 320px; line-height: 20px; letter-spacing: -0.28px; }
+
+/* button-primary-sm spec: ink bg, white text, pill shape */
+.fallback-download {
+  display: inline-flex; align-items: center; gap: var(--sp-xs);
+  padding: 0 var(--sp-sm); height: 32px;
+  background: var(--ink); color: #fff;
+  border: none; border-radius: var(--r-pill);
+  font-size: 14px; font-weight: 500; font-family: var(--font);
+  text-decoration: none; cursor: pointer;
+  transition: opacity 0.12s;
+}
+.fallback-download:hover { opacity: 0.82; }
+.fallback-download svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── empty ── ex-empty-state-card pattern ── */
+.empty { text-align: center; padding: 5rem 0; }
+.empty svg { width: 36px; height: 36px; stroke: var(--hairline-strong); fill: none; stroke-width: 1.5; margin: 0 auto var(--sp-sm); display: block; }
+.empty p { font-size: 14px; color: var(--mute); }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--hairline-strong); border-radius: 3px; }
 </style>
 </head>
 <body>
@@ -246,18 +410,17 @@
 <!-- topbar -->
 <header class="topbar">
   <a class="logo" href="#">
-    <div class="logo-icon">
-      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    <div class="logo-icon" id="logoIcon">
+      <svg class="fallback-svg" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
     </div>
     보고서 라이브러리
   </a>
 
-  <div class="search-wrap">
-    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="text" id="searchInput" placeholder="제목, 카테고리, 태그 검색…" autocomplete="off">
-  </div>
-
   <div class="topbar-right">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="검색…" autocomplete="off">
+    </div>
     <select class="sort-select" id="sortSelect">
       <option value="newest">최신순</option>
       <option value="oldest">오래된순</option>
@@ -274,57 +437,64 @@
   </div>
 </header>
 
-<!-- layout -->
 <div class="layout">
   <!-- sidebar -->
   <nav class="sidebar">
-    <div class="sidebar-section">
-      <div class="sidebar-label">보기</div>
-      <div class="sidebar-item active" data-filter="all">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        전체
-        <span class="sidebar-count" id="countAll">0</span>
+    <div class="sidebar-scroll">
+      <div class="sidebar-section">
+        <div class="sidebar-label">보기</div>
+        <div class="sidebar-item active" data-filter="all">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span>전체</span><span class="sidebar-count" id="countAll">—</span>
+        </div>
+        <div class="sidebar-item" data-filter="starred">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span>즐겨찾기</span><span class="sidebar-count" id="countStarred">—</span>
+        </div>
       </div>
-      <div class="sidebar-item" data-filter="starred">
-        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        즐겨찾기
-        <span class="sidebar-count" id="countStarred">0</span>
+      <div class="sidebar-section">
+        <div class="sidebar-label">카테고리</div>
+        <div id="catList"></div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">태그</div>
+        <div class="active-tags-bar" id="activeTagsBar">
+          <span class="active-tags-bar-label">필터 적용 중</span>
+          <button class="clear-tags" id="clearTagsBtn">전체 해제</button>
+        </div>
+        <div class="tags-wrap" id="tagList"></div>
       </div>
     </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">카테고리</div>
-      <div id="catList"></div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">태그</div>
-      <div class="tags-wrap" id="tagList"></div>
+    <div class="sidebar-credit">
+      <a class="credit-link" href="https://github.com/TETO-IS-KAWAI" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        TETO-IS-KAWAI
+      </a>
     </div>
   </nav>
 
   <!-- main -->
   <main class="main">
-    <!-- readme/how-to banner -->
-    <div class="readme">
+    <div class="how-banner">
       <details>
         <summary>보고서 추가 방법</summary>
-        <div class="content">
-          1. <code>reports/</code> 폴더에 HTML 파일을 넣는다.<br>
-          2. <code>reports.json</code>에 항목을 추가한다:<br>
-          <pre style="background:var(--bg-3);padding:0.75rem;border-radius:6px;margin-top:0.5rem;font-size:12px;overflow-x:auto;font-family:Menlo,Consolas,monospace;line-height:1.6">{
+        <div class="how-content">
+          1. <code>reports/</code> 폴더에 파일을 넣는다 (<code>.html</code> / <code>.pdf</code> / <code>.pptx</code>)<br>
+          2. <code>reports.json</code>에 항목을 추가한다:
+          <pre>{
   "id": "report-05",
   "title": "보고서 제목",
-  "file": "reports/report-05.html",
-  "category": "관측 보고서",
+  "file": "reports/report-05.pdf",
+  "type": "pdf",
+  "category": "분석 보고서",
   "tags": ["태그1", "태그2"],
-  "date": "2025-06-01",
-  "description": "간략한 설명",
+  "date": "2025-06-06",
+  "description": "설명 (선택)",
   "starred": false
 }</pre>
-          3. GitHub에 커밋하면 자동으로 반영된다.
         </div>
       </details>
     </div>
-
     <div class="toolbar">
       <span class="count-text" id="countLabel">불러오는 중…</span>
     </div>
@@ -332,241 +502,227 @@
   </main>
 </div>
 
-<!-- viewer modal -->
-<div class="modal-overlay" id="viewerOverlay">
+<!-- viewer -->
+<div class="overlay" id="viewerOverlay">
   <div class="viewer-box">
     <div class="viewer-header">
-      <svg style="width:16px;height:16px;stroke:var(--text-3);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      <span class="viewer-title" id="viewerTitle"></span>
-      <span class="viewer-meta" id="viewerMeta"></span>
-      <button class="viewer-close" id="viewerClose" title="닫기">
-        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <div class="viewer-icon" id="viewerIcon"></div>
+      <div class="viewer-info">
+        <div class="viewer-title" id="viewerTitle"></div>
+        <div class="viewer-meta"  id="viewerMeta"></div>
+      </div>
+      <div class="viewer-actions">
+        <a class="dl-btn" id="viewerDownload" download>
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          다운로드
+        </a>
+        <button class="viewer-close" id="viewerClose">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
     </div>
-    <iframe class="viewer-frame" id="viewerFrame" sandbox="allow-same-origin allow-scripts"></iframe>
+    <div class="viewer-body" id="viewerBody"></div>
   </div>
 </div>
 
 <script>
-// ── SVG icons ──────────────────────────────────────────────
-const ICONS = {
-  file:    `<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
-  chart:   `<svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
-  scope:   `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
-  flask:   `<svg viewBox="0 0 24 24"><path d="M9 3h6M9 3v7l-4 9a1 1 0 0 0 .93 1.36h12.14A1 1 0 0 0 19 19l-4-9V3"/></svg>`,
-  code:    `<svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`,
+const SVG = {
+  file:  `<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+  pdf:   `<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg>`,
+  pptx:  `<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+  chart: `<svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
+  scope: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+  flask: `<svg viewBox="0 0 24 24"><path d="M9 3h6M9 3v7l-4 9a1 1 0 0 0 .93 1.36h12.14A1 1 0 0 0 19 19l-4-9V3"/></svg>`,
+  code:  `<svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`,
 };
 
-const CAT_CONFIG = {
-  '관측 보고서': { cls: 'cat-obs',  icon: ICONS.scope  },
-  '분석 보고서': { cls: 'cat-anal', icon: ICONS.chart  },
-  '실험 보고서': { cls: 'cat-exp',  icon: ICONS.flask  },
-  '기술 문서':   { cls: 'cat-tech', icon: ICONS.code   },
+const TYPE_CFG = {
+  html: { typeClass:'type-html', label:'HTML', icon: SVG.file  },
+  pdf:  { typeClass:'type-pdf',  label:'PDF',  icon: SVG.pdf   },
+  pptx: { typeClass:'type-pptx', label:'PPTX', icon: SVG.pptx  },
 };
-function catCfg(c) { return CAT_CONFIG[c] || { cls: 'cat-other', icon: ICONS.file }; }
+const CAT_CFG = {
+  '탐구 보고서': { cls:'cat-explore', icon: SVG.scope  },
+  '관측 보고서': { cls:'cat-obs',     icon: SVG.scope  },
+  '분석 보고서': { cls:'cat-anal',    icon: SVG.chart  },
+  '실험 보고서': { cls:'cat-exp',     icon: SVG.flask  },
+  '기술 문서':   { cls:'cat-tech',    icon: SVG.code   },
+};
+const typeCfg = t => TYPE_CFG[t] || TYPE_CFG.html;
+const catCfg  = c => CAT_CFG[c]  || { cls:'cat-other', icon: SVG.file };
 
-// ── state ─────────────────────────────────────────────────
-let reports = [];
-let activeCat = 'all';
-let activeTag = null;
-let viewMode  = 'grid';
+let reports   = [];
+let activeCat  = 'all';
+let activeTags = new Set();
+let viewMode   = 'grid';
 
-// ── fetch reports.json ────────────────────────────────────
+// logo image fallback
+(function(){ const img=new Image(); img.onload=()=>{ document.getElementById('logoIcon').innerHTML=`<img src="icon.png" width="18" height="18" style="object-fit:contain">`; }; img.src='icon.png'; })();
+
 async function init() {
   try {
     const res = await fetch('reports.json');
-    if (!res.ok) throw new Error('fetch failed');
+    if (!res.ok) throw new Error();
     reports = await res.json();
-  } catch(e) {
-    document.getElementById('container').innerHTML =
-      `<div class="empty"><p style="color:red">reports.json을 불러오지 못했습니다.<br>로컬에서는 Live Server를 사용하세요.</p></div>`;
+  } catch {
+    document.getElementById('container').innerHTML=`<div class="empty"><p style="color:var(--error)">reports.json을 불러오지 못했습니다.<br>로컬에서는 VS Code Live Server를 사용하세요.</p></div>`;
+    document.getElementById('countLabel').textContent='';
     return;
   }
-  buildSidebar();
-  render();
+  buildSidebar(); render();
 }
 
-// ── sidebar ───────────────────────────────────────────────
 function buildSidebar() {
-  // category counts
   const catMap = {};
-  reports.forEach(r => { catMap[r.category] = (catMap[r.category]||0)+1; });
-
-  document.getElementById('countAll').textContent = reports.length;
+  reports.forEach(r => { catMap[r.category]=(catMap[r.category]||0)+1; });
+  document.getElementById('countAll').textContent     = reports.length;
   document.getElementById('countStarred').textContent = reports.filter(r=>r.starred).length;
 
-  const catEl = document.getElementById('catList');
-  catEl.innerHTML = Object.entries(catMap).map(([cat, count]) => {
-    const cfg = catCfg(cat);
-    return `<div class="sidebar-item" data-filter="cat:${cat}">
-      ${cfg.icon}<span style="flex:1">${cat}</span>
-      <span class="sidebar-count">${count}</span>
-    </div>`;
+  document.getElementById('catList').innerHTML = Object.entries(catMap).map(([cat,cnt])=>{
+    const cfg=catCfg(cat);
+    return `<div class="sidebar-item" data-filter="cat:${cat}">${cfg.icon}<span style="flex:1">${cat}</span><span class="sidebar-count">${cnt}</span></div>`;
   }).join('');
 
-  // tags
-  const tagSet = [...new Set(reports.flatMap(r=>r.tags))].sort();
-  document.getElementById('tagList').innerHTML = tagSet
-    .map(t => `<span class="tag-chip" data-tag="${t}">${t}</span>`)
-    .join('');
+  const tags=[...new Set(reports.flatMap(r=>r.tags))].sort();
+  document.getElementById('tagList').innerHTML=tags.map(t=>`<span class="tag-chip" data-tag="${t}">${t}</span>`).join('');
 
-  // sidebar click
-  document.querySelectorAll('.sidebar-item').forEach(el => {
-    el.addEventListener('click', () => {
+  document.querySelectorAll('.sidebar-item').forEach(el=>{
+    el.addEventListener('click',()=>{
       document.querySelectorAll('.sidebar-item').forEach(e=>e.classList.remove('active'));
       el.classList.add('active');
-      const f = el.dataset.filter;
-      activeCat = f.startsWith('cat:') ? f.slice(4) : f;
-      activeTag = null;
-      document.querySelectorAll('.tag-chip').forEach(e=>e.classList.remove('active'));
-      render();
+      activeCat=el.dataset.filter.startsWith('cat:')?el.dataset.filter.slice(4):el.dataset.filter;
+      activeTags.clear(); updateTagUI(); render();
     });
   });
 
-  // tag click
-  document.querySelectorAll('.tag-chip').forEach(el => {
-    el.addEventListener('click', () => {
-      const t = el.dataset.tag;
-      activeTag = (activeTag === t) ? null : t;
-      el.classList.toggle('active', activeTag === t);
-      if (activeTag) {
-        // deselect sidebar
-        document.querySelectorAll('.sidebar-item').forEach(e=>e.classList.remove('active'));
-        activeCat = 'all';
-      }
-      render();
-    });
+  document.getElementById('tagList').addEventListener('click',e=>{
+    const chip=e.target.closest('.tag-chip'); if(!chip) return;
+    const t=chip.dataset.tag;
+    activeTags.has(t)?activeTags.delete(t):activeTags.add(t);
+    if(activeTags.size>0){
+      document.querySelectorAll('.sidebar-item').forEach(e=>e.classList.remove('active'));
+      activeCat='all';
+    } else {
+      document.querySelector('.sidebar-item[data-filter="all"]').classList.add('active');
+    }
+    updateTagUI(); render();
+  });
+
+  document.getElementById('clearTagsBtn').addEventListener('click',()=>{
+    activeTags.clear();
+    document.querySelector('.sidebar-item[data-filter="all"]').classList.add('active');
+    activeCat='all'; updateTagUI(); render();
   });
 }
 
-// ── filter + sort ─────────────────────────────────────────
-function getFiltered() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  const sort = document.getElementById('sortSelect').value;
+function updateTagUI() {
+  document.querySelectorAll('.tag-chip').forEach(c=>c.classList.toggle('active',activeTags.has(c.dataset.tag)));
+  document.getElementById('activeTagsBar').classList.toggle('visible',activeTags.size>0);
+}
 
-  let list = reports.filter(r => {
-    if (activeCat === 'starred' && !r.starred) return false;
-    if (activeCat !== 'all' && activeCat !== 'starred' && r.category !== activeCat) return false;
-    if (activeTag && !r.tags.includes(activeTag)) return false;
-    if (q) {
-      const hay = (r.title + r.category + r.tags.join('') + (r.description||'')).toLowerCase();
-      if (!hay.includes(q)) return false;
-    }
+function getFiltered() {
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const sort=document.getElementById('sortSelect').value;
+  let list=reports.filter(r=>{
+    if(activeCat==='starred'&&!r.starred) return false;
+    if(activeCat!=='all'&&activeCat!=='starred'&&r.category!==activeCat) return false;
+    if(activeTags.size>0&&![...activeTags].every(t=>r.tags.includes(t))) return false;
+    if(q){const hay=(r.title+r.category+r.tags.join('')+(r.description||'')).toLowerCase();if(!hay.includes(q))return false;}
     return true;
   });
-
-  if (sort === 'newest') list.sort((a,b) => b.date.localeCompare(a.date));
-  else if (sort === 'oldest') list.sort((a,b) => a.date.localeCompare(b.date));
-  else list.sort((a,b) => a.title.localeCompare(b.title, 'ko'));
-
+  if(sort==='newest') list.sort((a,b)=>b.date.localeCompare(a.date));
+  else if(sort==='oldest') list.sort((a,b)=>a.date.localeCompare(b.date));
+  else list.sort((a,b)=>a.title.localeCompare(b.title,'ko'));
   return list;
 }
 
-// ── render ────────────────────────────────────────────────
 function render() {
-  const list = getFiltered();
-  document.getElementById('countLabel').textContent = `${list.length}개의 보고서`;
-  const cont = document.getElementById('container');
-
-  if (!list.length) {
-    cont.innerHTML = `<div class="empty">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
-      <p>조건에 맞는 보고서가 없습니다</p>
-    </div>`;
+  const list=getFiltered();
+  document.getElementById('countLabel').textContent=`${list.length}개`;
+  const cont=document.getElementById('container');
+  if(!list.length){
+    cont.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>조건에 맞는 보고서가 없습니다</p></div>`;
     return;
   }
-
-  if (viewMode === 'grid') {
-    cont.className = 'grid-view';
-    cont.innerHTML = list.map(r => cardHTML(r)).join('');
-  } else {
-    cont.className = 'list-view';
-    cont.innerHTML = list.map(r => rowHTML(r)).join('');
-  }
-
-  cont.querySelectorAll('[data-id]').forEach(el => {
-    el.addEventListener('click', () => openViewer(el.dataset.id));
-  });
+  cont.className=viewMode==='grid'?'grid-view':'list-view';
+  cont.innerHTML=list.map(r=>viewMode==='grid'?cardHTML(r):rowHTML(r)).join('');
+  cont.querySelectorAll('[data-id]').forEach(el=>el.addEventListener('click',()=>openViewer(el.dataset.id)));
 }
 
-function starHTML(r) {
-  return r.starred ? `<span class="card-star" title="즐겨찾기">★</span>` : '';
-}
-
-function cardHTML(r) {
-  const cfg = catCfg(r.category);
-  const tagsHtml = r.tags.slice(0,4).map(t=>`<span class="card-tag">${t}</span>`).join('');
+function cardHTML(r){
+  const cc=catCfg(r.category), tc=typeCfg(r.type);
+  const tags=r.tags.slice(0,4).map(t=>`<span class="card-tag">${t}</span>`).join('');
   return `<div class="report-card" data-id="${r.id}">
-    <div class="card-top">
-      <div class="card-icon">${cfg.icon}</div>
-      ${starHTML(r)}
-    </div>
+    <div class="card-top"><div class="card-icon">${tc.icon}</div>${r.starred?'<span class="card-star">★</span>':''}</div>
     <div class="card-title">${r.title}</div>
-    ${r.description ? `<div class="card-desc">${r.description}</div>` : ''}
+    ${r.description?`<div class="card-desc">${r.description}</div>`:''}
     <div class="card-footer">
-      <span class="cat-badge ${cfg.cls}">${r.category}</span>
-      <span class="card-date">${r.date}</span>
+      <span class="cat-badge ${cc.cls}">${r.category}</span>
+      <span class="type-badge ${tc.typeClass}">${tc.label}</span>
     </div>
-    ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ''}
+    <div class="card-date" style="margin-top:6px">${r.date}</div>
+    ${tags?`<div class="card-tags">${tags}</div>`:''}
   </div>`;
 }
 
-function rowHTML(r) {
-  const cfg = catCfg(r.category);
-  const tagsHtml = r.tags.slice(0,3).map(t=>`<span class="card-tag">${t}</span>`).join('');
+function rowHTML(r){
+  const cc=catCfg(r.category), tc=typeCfg(r.type);
+  const tags=r.tags.slice(0,3).map(t=>`<span class="card-tag">${t}</span>`).join('');
   return `<div class="report-row" data-id="${r.id}">
-    <div class="row-icon">${cfg.icon}</div>
+    <div class="row-icon">${tc.icon}</div>
     <span class="row-title">${r.title}</span>
     <div class="row-right">
-      ${tagsHtml ? `<div class="row-tags">${tagsHtml}</div>` : ''}
-      <span class="cat-badge ${cfg.cls}">${r.category}</span>
-      <span style="font-size:12px;color:var(--text-3)">${r.date}</span>
-      ${r.starred ? '<span style="color:#d4a017;font-size:13px">★</span>' : ''}
+      ${tags?`<div style="display:flex;gap:4px">${tags}</div>`:''}
+      <span class="cat-badge ${cc.cls}">${r.category}</span>
+      <span class="type-badge ${tc.typeClass}">${tc.label}</span>
+      <span style="font-size:12px;color:var(--mute);font-family:var(--font-mono)">${r.date}</span>
+      ${r.starred?'<span style="color:var(--warning);font-size:13px">★</span>':''}
     </div>
   </div>`;
 }
 
-// ── viewer ────────────────────────────────────────────────
-function openViewer(id) {
-  const r = reports.find(x => x.id === id);
-  if (!r) return;
-  document.getElementById('viewerTitle').textContent = r.title;
-  document.getElementById('viewerMeta').textContent = r.date + ' · ' + r.category;
-  document.getElementById('viewerFrame').src = r.file;
+function openViewer(id){
+  const r=reports.find(x=>x.id===id); if(!r) return;
+  const tc=typeCfg(r.type);
+  document.getElementById('viewerIcon').innerHTML=tc.icon;
+  document.getElementById('viewerTitle').textContent=r.title;
+  document.getElementById('viewerMeta').textContent=`${r.date} · ${r.category} · ${tc.label}`;
+  const dl=document.getElementById('viewerDownload');
+  dl.href=r.file; dl.download=r.file.split('/').pop();
+  const body=document.getElementById('viewerBody');
+  if(r.type==='html'){
+    body.innerHTML=`<iframe class="viewer-frame" src="${r.file}" sandbox="allow-same-origin allow-scripts"></iframe>`;
+  } else if(r.type==='pdf'){
+    body.innerHTML=`<embed src="${r.file}" type="application/pdf" class="viewer-frame">`;
+    setTimeout(()=>{ const e=body.querySelector('embed'); if(e&&e.clientHeight<10) showFallback(body,r,tc); },800);
+  } else { showFallback(body,r,tc); }
   document.getElementById('viewerOverlay').classList.add('open');
 }
 
-document.getElementById('viewerClose').addEventListener('click', closeViewer);
-document.getElementById('viewerOverlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('viewerOverlay')) closeViewer();
-});
-function closeViewer() {
-  document.getElementById('viewerOverlay').classList.remove('open');
-  document.getElementById('viewerFrame').src = '';
+function showFallback(body,r,tc){
+  body.innerHTML=`<div class="viewer-fallback">
+    <div class="fallback-icon">${tc.icon}</div>
+    <div class="fallback-title">${r.title}</div>
+    <div class="fallback-desc">${r.type==='pptx'?'PPTX 파일은 브라우저에서 직접 열 수 없습니다.<br>다운로드 후 PowerPoint 또는 Google Slides로 여세요.':'PDF를 브라우저에서 열 수 없습니다.<br>다운로드하여 열어주세요.'}</div>
+    <a class="fallback-download" href="${r.file}" download="${r.file.split('/').pop()}">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      ${r.file.split('/').pop()} 다운로드
+    </a>
+  </div>`;
 }
 
-// ── view toggle ───────────────────────────────────────────
-document.getElementById('btnGrid').addEventListener('click', () => {
-  viewMode = 'grid';
-  document.getElementById('btnGrid').classList.add('active');
-  document.getElementById('btnList').classList.remove('active');
-  render();
-});
-document.getElementById('btnList').addEventListener('click', () => {
-  viewMode = 'list';
-  document.getElementById('btnList').classList.add('active');
-  document.getElementById('btnGrid').classList.remove('active');
-  render();
-});
+function closeViewer(){
+  document.getElementById('viewerOverlay').classList.remove('open');
+  document.getElementById('viewerBody').innerHTML='';
+}
 
-// ── search + sort ─────────────────────────────────────────
-document.getElementById('searchInput').addEventListener('input', render);
-document.getElementById('sortSelect').addEventListener('change', render);
-
-// ── keyboard ──────────────────────────────────────────────
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeViewer();
-});
+document.getElementById('viewerClose').addEventListener('click',closeViewer);
+document.getElementById('viewerOverlay').addEventListener('click',e=>{ if(e.target===document.getElementById('viewerOverlay')) closeViewer(); });
+document.getElementById('btnGrid').addEventListener('click',()=>{ viewMode='grid'; document.getElementById('btnGrid').classList.add('active'); document.getElementById('btnList').classList.remove('active'); render(); });
+document.getElementById('btnList').addEventListener('click',()=>{ viewMode='list'; document.getElementById('btnList').classList.add('active'); document.getElementById('btnGrid').classList.remove('active'); render(); });
+document.getElementById('searchInput').addEventListener('input',render);
+document.getElementById('sortSelect').addEventListener('change',render);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeViewer(); });
 
 init();
 </script>
