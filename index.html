@@ -311,6 +311,7 @@ body {
 .cat-anal    { background: #d4f4e8; color: #16a34a; }
 .cat-exp     { background: #fff3d4; color: var(--warning); }
 .cat-tech    { background: #fce8f0; color: var(--highlight-pink); }
+.cat-present { background: #fff3d4; color: #d97706; }
 .cat-other   { background: var(--canvas-soft-2); color: var(--body); }
 
 /* ── overlay / viewer ── ex-modal-card: canvas bg, elevated shadow ── */
@@ -547,6 +548,7 @@ const CAT_CFG = {
   '분석 보고서': { cls:'cat-anal',    icon: SVG.chart  },
   '실험 보고서': { cls:'cat-exp',     icon: SVG.flask  },
   '기술 문서':   { cls:'cat-tech',    icon: SVG.code   },
+  '발표 자료':   { cls:'cat-present', icon: SVG.pptx   },
 };
 const typeCfg = t => TYPE_CFG[t] || TYPE_CFG.html;
 const catCfg  = c => CAT_CFG[c]  || { cls:'cat-other', icon: SVG.file };
