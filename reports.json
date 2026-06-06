@@ -25,13 +25,13 @@
 
   {
     "id": "presentation-linear-algebra-Koo-june",
-    "title": "물리학 관점에서 본 전자 정보 통신 기술",
+    "title": "About PageRank Vector",
     "file": "reports/presentation-linear-algebra-Koo-june.pdf",
     "type": "pdf",
     "category": "발표 자료",
     "tags": ["수학", "선형대수학", "수행평가"],
     "date": "2025-06-05",
-    "description": "선형대수학 발표 수행평가로 제작한 자료",
+    "description": "선형대수학 발표 수행평가",
     "starred": false
   }
 ]
