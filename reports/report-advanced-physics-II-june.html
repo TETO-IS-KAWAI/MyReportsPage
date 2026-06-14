@@ -15,7 +15,7 @@ MathJax = {
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@400;500&family=JetBrains+Mono&display=swap');
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/[email protected]/dist/web/static/pretendard.min.css');
 
   :root {
     --primary: #700428;
@@ -37,7 +37,7 @@ MathJax = {
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Noto Serif KR', Georgia, serif;
+    font-family: 'Pretendard', sans-serif;
     font-size: 16px;
     line-height: 1.85;
     color: var(--text);
@@ -55,7 +55,7 @@ MathJax = {
     position: relative;
   }
   .cover-subtitle {
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard', sans-serif;
     font-size: 13px;
     letter-spacing: 3px;
     text-transform: uppercase;
@@ -76,7 +76,7 @@ MathJax = {
     margin-bottom: 30px;
   }
   .cover-meta {
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard', sans-serif;
     font-size: 13px;
     color: #c1c1c1;
     border-top: 1px solid rgba(255,255,255,0.25);
@@ -95,7 +95,7 @@ MathJax = {
   }
   .toc h2 {
     font-size: 14px;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard', sans-serif;
     letter-spacing: 2px;
     color: var(--accent);
     margin-bottom: 14px;
@@ -106,7 +106,7 @@ MathJax = {
     font-size: 14px;
     line-height: 2;
     color: var(--primary);
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard', sans-serif;
   }
   .toc li a { color: inherit; text-decoration: none; }
   .toc li a:hover { text-decoration: underline; }
@@ -158,7 +158,7 @@ MathJax = {
     margin: 24px 0;
   }
   .box-label {
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard', sans-serif;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 2px;
@@ -192,7 +192,7 @@ MathJax = {
     margin: 16px 0 28px;
   }
   .proof-header {
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard', sans-serif;
     font-size: 13px;
     font-weight: 700;
     color: var(--muted);
@@ -216,14 +216,14 @@ MathJax = {
     border-collapse: collapse;
     margin: 20px 0;
     font-size: 14px;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard', sans-serif;
   }
   thead { background: var(--primary); color: white; }
   th { padding: 10px 14px; text-align: left; font-weight: 600; font-size: 13px; }
   td { padding: 10px 14px; border-bottom: 1px solid #e0e0e0; vertical-align: top; line-height: 1.6; }
   tr:nth-child(even) td { background: #f4f7fb; }
   .tbl-caption {
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard', sans-serif;
     font-size: 12px;
     color: var(--muted);
     margin-top: -14px;
@@ -243,7 +243,7 @@ MathJax = {
     background: var(--primary);
     color: white;
     padding: 8px 18px;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard', sans-serif;
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 1.5px;
@@ -356,21 +356,21 @@ $$c = \frac{1}{\sqrt{\mu_0 \varepsilon_0}} \approx 2.998 \times 10^8 \;\text{m/s
 
 $$\mathbf{E}(x,t) = E_0 \cos(kx - \omega t)\,\hat{y}, \qquad \mathbf{B}(x,t) = \frac{E_0}{c}\cos(kx - \omega t)\,\hat{z}$$
 
-<p>$\hat{x}$가 전파 방향일 때, $\mathbf{E}$는 $\hat{y}$, $\mathbf{B}$는 $\hat{z}$ 방향으로 진동한다. 두 장 모두 전파 방향에 수직인 <strong>횡파(transverse wave)</strong>다. 이는 우리가 수업 시간에 배웠듯 가우스 법칙이 파동이 진행하는 방향의 전기장 성분의 존재를 금지하기 때문이다.</p>
+<p>$\hat{x}$가 전파 방향일 때, $\mathbf{E}$는 $\hat{y}$, $\mathbf{B}$는 $\hat{z}$ 방향으로 진동한다. 두 장 모두 전파 방향에 수직인 <strong>횡파(transverse wave)</strong>다. 자유 공간의 가우스 법칙 $\nabla\cdot\mathbf{E}=0$이 평면파 가정 하에서 $\mathbf{k}\cdot\mathbf{E}=0$을 강제하기 때문에, 전파 방향의 전기장 성분은 존재할 수 없다.</p>
 
 <h3 class="subsection" id="sec1-3">c. 기저대역 신호를 직접 송신하지 않는 이유</h3>
 
 <p>음성이나 데이터 신호를 그냥 안테나에 연결할 수 없는 이유는 두 가지가 있다.</p>
 
-<p><strong>안테나 공명 조건.</strong> 안테나가 효율적으로 방사하려면 물리적 길이가 $\lambda/4$에 가까워야 한다. 음성 신호의 주요 주파수인 1 kHz에 대해 $\lambda = c/f = 300\,\text{km}$이므로 $\lambda/4 \approx 75\,\text{km}$ 안테나가 필요하다. 물리적으로 불가능하다. 반면 2.4 GHz 반송파를 사용하면 $\lambda/4 \approx 3\,\text{cm}$로 구현 가능하다.</p>
+<p><strong>안테나 공명 조건.</strong> 안테나가 효율적으로 방사하려면 물리적 길이가 $\lambda/4$에 가까워야 한다. 음성 신호의 주요 주파수인 1 kHz에 대해 $\lambda = c/f = 300\,\text{km}$이므로 $\lambda/4 \approx 75\,\text{km}$ 안테나가 필요하다. 현실적으로 불가능하다. 반면 2.4 GHz 반송파를 사용하면 $\lambda/4 \approx 3\,\text{cm}$로 구현 가능하다.</p>
 
-<p><strong>주파수 다중화.</strong> 서로 다른 반송파 주파수를 배당받은 시스템들은 같은 공간에서 동시에 통신할 수 있다. 이 두 이유로 인해 정보 신호를 고주파 반송파에 실어서 송신하는 <strong>변조(modulation)</strong>가 필연적으로 요구된다.</p>
+<p><strong>주파수 다중화.</strong> 서로 다른 반송파 주파수를 배당받은 시스템들은 같은 공간에서 동시에 통신할 수 있다. 이런 이유로 정보 신호를 고주파 반송파에 실어서 송신하는 <strong>변조(modulation)</strong>가 필연적으로 요구된다.</p>
 
-<p>이때 반송파란 라디오나 Wi-Fi 등 무선 통신에서 정보 신호를 멀리 보내기 위해 사용하는 높은 주파수의 전자기파(사인파)라고 한다.</p>
+<p>이때 반송파(carrier)는 라디오나 Wi-Fi 같은 무선 통신에서 정보 신호를 멀리 보내기 위해 사용하는 높은 주파수의 사인파다.</p>
 
 $$c(t) = A_c \cos(2\pi f_c t + \phi_c)$$
 
-<p>$A_c$는 진폭, $f_c$는 반송파 주파수, $\phi_c$는 초기 위상이다. 정보를 실는다는 것은 이 세 변수 중 하나 이상을 데이터에 따라 변화하는 것이며, 현대 통신의 모든 변조 방식이 이로부터 파생된다고 한다.</p>
+<p>$A_c$는 진폭, $f_c$는 반송파 주파수, $\phi_c$는 초기 위상이다. 정보를 싣는다는 것은 이 세 변수 중 하나 이상을 데이터에 따라 변화시키는 것이며, 현대의 디지털 변조 방식은 모두 이로부터 파생된다.</p>
 
 <!-- ===== 2 ===== -->
 <h2 class="section-title" id="sec2">PSK: 위상으로 정보를 담는 방법</h2>
@@ -391,9 +391,9 @@ $$s_\text{QPSK}(t) = A_c \cos\!\left(2\pi f_c t + \frac{(2n+1)\pi}{4}\right),\qu
 
 <div class="theorem box">
   <div class="box-label">핵심 사실 — BPSK vs QPSK의 BER</div>
-  신호의 전송 전력을 비트 수로 나눈 "비트당 에너지" $E_b$를 동일하게 비교하면, BPSK와 QPSK의 비트 오류율(BER)은 수학적으로 거의 동일하다.
-  $$P_b^\text{BPSK} = Q\!\left(\sqrt{\tfrac{2E_b}{N_0}}\right) \approx P_b^\text{QPSK}$$
-  QPSK에서 각 심볼의 에너지는 $E_s = 2E_b$로, 2 bit를 담기 위해 에너지도 두 배다. QPSK의 진정한 이점은 <strong>같은 대역폭에서 2배의 데이터를 전송</strong>하는 스펙트럼 효율의 향상이지, 잡음 내성의 향상이 아니다.
+  신호의 전송 전력을 비트 수로 나눈 "비트당 에너지" $E_b$를 동일하게 비교하면, BPSK와 QPSK의 비트 오류율(BER)은 (Gray 부호화 기준) 수학적으로 정확히 동일하다.
+  $$P_b^\text{BPSK} = Q\!\left(\sqrt{\tfrac{2E_b}{N_0}}\right) = P_b^\text{QPSK}$$
+  QPSK에서 각 심볼의 에너지는 $E_s = 2E_b$로, 2 bit를 담기 위해 에너지도 두 배다. QPSK의 진정한 이점은 <strong>같은 대역폭에서 2배의 데이터를 전송</strong>하는 스펙트럼 효율의 향상이지, 잡음 내성의 향상이 아니다. (이 등식이 정확히 성립하는 이유는 3-c절의 I/Q 직교성에서 다시 다룬다.)
 </div>
 
 <!-- ===== 3 ===== -->
@@ -407,7 +407,7 @@ $$s_\text{QPSK}(t) = A_c \cos\!\left(2\pi f_c t + \frac{(2n+1)\pi}{4}\right),\qu
 
 <p>임의의 진폭과 위상을 가진 반송파 $s(t) = A(t)\cos(2\pi f_c t + \theta(t))$에 덧셈정리를 적용하면,</p>
 
-$$s(t) = \underbrace{A(t)\cos\theta(t)}_{I(t)} \cdot \cos(2\pi f_c t) \;-\; \underbrace{A(t)\sin\theta(t)}_{Q(t)} \cdot \sin(2\pi f_c t)$$
+$$s(t) = \underbrace{A(t)\cos\theta(t)}_{I(t)}\cos(2\pi f_c t) \;-\; \underbrace{A(t)\sin\theta(t)}_{Q(t)}\sin(2\pi f_c t)$$
 
 <div class="definition box">
   <div class="box-label">Definition — I/Q 분해</div>
@@ -419,13 +419,18 @@ $$s(t) = \underbrace{A(t)\cos\theta(t)}_{I(t)} \cdot \cos(2\pi f_c t) \;-\; \und
 
 <p>수신기는 합성 신호에서 $I(t)$와 $Q(t)$를 코사인과 사인이 <strong>직교(orthogonal)</strong>하다는 성질로 분리한다.</p>
 
-$$\frac{1}{T}\int_0^T \cos(2\pi f_c t)\cdot\sin(2\pi f_c t)\,dt = \frac{1}{T}\int_0^T \frac{1}{2}\sin(4\pi f_c t)\,dt = 0$$
+$$\frac{1}{T}\int_0^T \cos(2\pi f_c t)\sin(2\pi f_c t)\,dt = \frac{1}{T}\int_0^T \frac{1}{2}\sin(4\pi f_c t)\,dt = 0$$
 
 <p>수신 신호 $s(t)$에 $\cos(2\pi f_c t)$를 곱하고 한 심볼 주기 동안 적분하면,</p>
 
 $$\int_0^T s(t)\cos(2\pi f_c t)\,dt = I(t)\underbrace{\int_0^T\cos^2(\cdot)\,dt}_{T/2} - Q(t)\underbrace{\int_0^T\cos(\cdot)\sin(\cdot)\,dt}_{0} = \frac{T}{2}I$$
 
 <p>$Q$ 성분은 완벽히 소멸하고 $I$만 남는다. 이 과정이 <strong>코히런트 복조(coherent demodulation)</strong>이며, 코사인과 사인이 서로 독립된 두 개의 정보 통로 역할을 한다.</p>
+
+<div class="remark box">
+  <div class="box-label">2장 BER 동일성의 물리적 근거</div>
+  QPSK는 본질적으로 같은 반송파 주파수에서 동작하는 <strong>두 개의 독립적인 BPSK 시스템</strong>(I 채널과 Q 채널)을 직교성으로 겹쳐 놓은 것이다. 두 채널은 각각 비트당 에너지 $E_b$를 가지며, 코히런트 복조 과정에서 $I$와 $Q$에 더해지는 잡음 성분도 서로 직교하여 독립적으로 분리된다. 따라서 한 비트의 오류 확률은 그 비트가 속한 채널만의 BPSK 문제로 정확히 환원되고, $P_b^\text{QPSK} = P_b^\text{BPSK} = Q(\sqrt{2E_b/N_0})$가 (Gray 부호화 가정 하에) 등호로 성립한다.
+</div>
 
 <h3 class="subsection">d. 고차 QAM의 트레이드오프</h3>
 
@@ -444,7 +449,7 @@ $$d_\text{min} \propto \sqrt{\frac{E_s}{M-1}}$$
     <tr><td>16-QAM</td><td>4</td><td>~12 dB</td><td>LTE 중간 거리</td></tr>
     <tr><td>64-QAM</td><td>6</td><td>~18 dB</td><td>LTE, Wi-Fi 표준 환경</td></tr>
     <tr><td>256-QAM</td><td>8</td><td>~24 dB</td><td>근거리 Wi-Fi, LTE-A</td></tr>
-    <tr><td>1024-QAM</td><td>10</td><td>~30 dB</td><td>5G 밀집 환경 (실내)</td></tr>
+    <tr><td>1024-QAM</td><td>10</td><td>~30 dB</td><td>Wi-Fi 6/7 실내 근거리</td></tr>
   </tbody>
 </table>
 <div class="tbl-caption">표 1. QAM 변조 방식별 스펙트럼 효율 및 요구 SNR.</div>
@@ -471,22 +476,22 @@ $$d_\text{min} \propto \sqrt{\frac{E_s}{M-1}}$$
 $$\frac{N}{B} = k_B T \approx 4.0\times10^{-21}\,\text{W/Hz} = -174\,\text{dBm/Hz}$$
 
 <div class="highlight">
-  $-174\,\text{dBm/Hz}$가 모든 무선 수신기의 감도 하한(noise floor)이다. 이 값 이하의 신호는 어떤 기술로도 탐지할 수 없다.
+  $-174\,\text{dBm/Hz}$는 실온에서 정합된 안테나가 수신기에 전달하는 잡음 전력 밀도의 기준값이며, 일반적인 무선 수신기 설계의 출발점이 되는 감도 하한(noise floor)이다. 안테나/저잡음증폭기를 저온으로 냉각하거나 처리이득을 활용하면 이 값 이하의 신호도 복구할 수 있지만, 상온 환경에서는 이 값을 의미 있게 넘어설 수 없다.
 </div>
 
 <h3 class="subsection" id="sec4-2">b. 다중 경로 페이딩: 파동 간섭이 통신을 파괴하는 방식</h3>
 
 <p>도시 환경에서 전자기파는 건물, 차량, 지면에 의해 반사·굴절·회절되어 수신기에 여러 경로로 동시에 도달한다. 두 경로의 파동은 경로 길이 차이 $\Delta d$에 따라 위상이 어긋나 있다.</p>
 
-$$\Delta\phi = \frac{2\pi}{\lambda}\cdot\Delta d$$
+$$\Delta\phi = \frac{2\pi}{\lambda}\Delta d$$
 
 <p>이 위상 차이가 $\Delta\phi = \pi$ (즉 $\Delta d = \lambda/2$)이면 두 파동은 <strong>완전 상쇄 간섭</strong>을 일으킨다. 2.4 GHz Wi-Fi의 경우 $\lambda \approx 12.5\,\text{cm}$이므로, $\lambda/2 = 6.25\,\text{cm}$만큼 위치를 바꿔도 신호가 보강 간섭에서 상쇄 간섭으로 바뀔 수 있다. 이것이 스마트폰을 들고 걸을 때 수신 강도가 지속적으로 변동하는 이유이며, 이를 <strong>레일리 페이딩(Rayleigh fading)</strong>이라 한다.</p>
 
 <h3 class="subsection" id="sec4-3">c. 부호 간 간섭(ISI): 전력을 높여도 해결 안 되는 문제</h3>
 
-<p>다중 경로의 더 치명적인 효과는 시간 영역에서 나타난다. 여러 경로의 신호들 사이에는 도달 시간의 차이, 즉 <strong>지연 시간(delay spread)</strong> $\Delta t = \Delta d / c$가 존재한다. 이 지연이 한 심볼의 지속 시간 $T_s$에 가까워지면 현재 심볼을 직접 경로로 수신하는 동시에 이전 심볼이 우회 경로를 통해 늦게 도착한다. 이것이 <strong>부호 간 간섭(ISI)</strong>이다.</p>
+<p>다중 경로의 더 치명적인 효과는 시간 영역에서 나타난다. 여러 경로의 신호들 사이에는 도달 시간의 차이, 즉 <strong>지연 시간(delay spread)</strong> $\Delta t = \Delta d / c$가 존재한다. 이 지연이 한 심볼의 지속 시간 $T_s$에 비해 무시할 수 없게 되면, 현재 심볼을 직접 경로로 수신하는 동시에 이전 심볼이 우회 경로를 통해 늦게 도착한다. 이것이 <strong>부호 간 간섭(ISI)</strong>이다.</p>
 
-$$\text{ISI 발생 조건:}\quad \Delta t_\text{max} \gtrsim T_s$$
+$$\text{ISI 심각화 조건:}\quad \Delta t_\text{max} \gtrsim T_s$$
 
 <div class="theorem box">
   <div class="box-label">ISI는 전력 증가로 극복 불가</div>
@@ -510,7 +515,16 @@ $$\text{ISI 발생 조건:}\quad \Delta t_\text{max} \gtrsim T_s$$
   </ul>
 </div>
 
-<p>섀넌은 이것이 어떤 변조나 코딩 기술을 써도 넘을 수 없는 <strong>물리적 한계</strong>임을 증명했다. SNR이 3 dB(두 배) 증가할 때마다 채널 용량이 $B\,\text{bps}$씩 선형으로 증가한다. 이것이 LTE와 5G가 더 넓은 대역폭 확보에 집중하는 이유다.</p>
+<p>섀넌은 이것이 어떤 변조나 코딩 기술을 써도 넘을 수 없는 <strong>정보이론적 상한</strong>임을 증명했다.</p>
+
+<div class="remark box">
+  <div class="box-label">고SNR 근사</div>
+  $S/N \gg 1$인 영역에서는 $\log_2(1+S/N) \approx \log_2(S/N)$이므로 $C \approx B\log_2(S/N)$이다. 이때 SNR을 두 배(3 dB)로 올리면
+  $$C\!\left(\tfrac{2S}{N}\right) - C\!\left(\tfrac{S}{N}\right) \approx B\log_2 2 = B$$
+  즉 채널 용량이 $B\,\text{bps}$만큼 늘어난다. 표 1에서 변조 차수가 2 bit/symbol씩 늘어날 때마다 요구 SNR이 약 6 dB씩 증가하는 패턴도 같은 근사에서 비롯된다.<br><br>
+  반면 $S/N \ll 1$인 저SNR 영역에서는 $\log_2(1+S/N) \approx S/(N\ln 2)$가 되어 $C \approx \dfrac{BS}{N\ln 2}$이다. 이 경우 SNR을 두 배로 올리면 용량도 거의 두 배가 될 뿐, $B$만큼 늘어나는 것은 아니다.<br><br>
+  결국 SNR 3 dB 증가가 용량 $B\,\text{bps}$ 증가로 이어진다는 관계는 일반 법칙이 아니라 <strong>고SNR 영역에서만 성립하는 근사</strong>다. 다만 이 근사가 말해주는 방향성은 분명하다. 채널 용량을 늘리는 데에는 SNR을 지수적으로 키우는 것보다 대역폭 $B$를 선형으로 늘리는 쪽이 훨씬 효율적이며, 이것이 LTE와 5G가 더 넓은 대역폭 확보에 집중하는 이유다.
+</div>
 
 <h3 class="subsection">b. AMC: 물리 상태를 읽고 한계에 근접하는 전략</h3>
 
@@ -538,7 +552,7 @@ $$T_s \;\longrightarrow\; NT_s$$
 
 <p>부반송파 간격을 $\Delta f = 1/T$로 정확히 설정하면 임의의 두 부반송파 $f_m$과 $f_n$에 대해 한 심볼 주기 동안 내적을 계산하면,</p>
 
-$$\frac{1}{T}\int_0^T e^{j2\pi f_m t}\cdot e^{-j2\pi f_n t}\,dt = \begin{cases}1, & m = n \\ 0, & m \neq n\end{cases}$$
+$$\frac{1}{T}\int_0^T e^{j2\pi f_m t}e^{-j2\pi f_n t}\,dt = \begin{cases}1, & m = n \\ 0, & m \neq n\end{cases}$$
 
 <div class="remark box">
   <div class="box-label">FDM과의 본질적 차이</div>
@@ -552,7 +566,7 @@ $$\frac{1}{T}\int_0^T e^{j2\pi f_m t}\cdot e^{-j2\pi f_n t}\,dt = \begin{cases}1
 <div class="definition box">
   <div class="box-label">Cyclic Prefix의 수학적 효과</div>
   CP 길이를 $T_\text{CP} \geq \Delta t_\text{max}$로 설정하면 이전 심볼의 모든 다중 경로 성분이 CP 구간 내에 도착을 완료한다. 수신기는 CP 구간을 버리고 심볼 본체만 처리하므로 ISI가 완전히 제거된다. 더 중요한 효과는 채널이 <strong>순환 합성곱</strong>으로 표현되어 각 부반송파 복원이 단순한 복소 나눗셈 한 번으로 완료된다는 점이다.
-  $$Y_k = H(f_k)\cdot X_k + W_k \;\implies\; \hat{X}_k = \frac{Y_k}{H(f_k)}$$
+  $$Y_k = H(f_k)X_k + W_k \;\implies\; \hat{X}_k = \frac{Y_k}{H(f_k)}$$
 </div>
 
 <p>LTE 표준에서 CP 길이는 일반 모드 $4.7\,\mu\text{s}$이다. 이는 빛이 약 1400 m를 이동하는 시간에 해당하므로, 이보다 짧은 경로 차이는 모두 CP로 처리 가능하다.</p>
@@ -595,7 +609,7 @@ $$X_k = \underbrace{\sum_{n=0}^{N/2-1}x_{2n}\,e^{-j\frac{2\pi}{N/2}kn}}_{E_k} + 
     <tr><td>코사인·사인의 수학적 직교성</td><td>→</td><td>I/Q 복조, QAM 구현 원리</td></tr>
     <tr><td>볼츠만 통계 → 열잡음 $N = k_BT B$</td><td>→</td><td>수신기 감도 하한, 변조 차수 제한</td></tr>
     <tr><td>섀넌 정리 → 정보 상한</td><td>→</td><td>적응형 변조 및 코딩 (AMC)</td></tr>
-    <tr><td>다중 경로 → 위상 차이 → 페이딩</td><td>→</td><td>OFDM: 좁은 부반송파로 분할</td></tr>
+    <tr><td>다중 경로 → 주파수 선택성 채널 → ISI 발생</td><td>→</td><td>OFDM: 좁은 부반송파별 평탄 페이딩으로 분해</td></tr>
     <tr><td>ISI: 심볼 주기와 경로 지연의 충돌</td><td>→</td><td>순환 전치 (Cyclic Prefix)</td></tr>
     <tr><td>실시간 연산 전력·면적 한계</td><td>→</td><td>FFT: $O(N^2) \to O(N\log_2 N)$</td></tr>
   </tbody>
